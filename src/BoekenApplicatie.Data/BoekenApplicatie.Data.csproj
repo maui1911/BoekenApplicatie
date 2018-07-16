@@ -1,0 +1,28 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <TargetFramework>netstandard2.0</TargetFramework>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <Compile Remove="Migrations\20180713131951_Initial.cs" />
+    <Compile Remove="Migrations\20180713133537_Initial.cs" />
+    <Compile Remove="Migrations\20180713133725_Initial.cs" />
+    <Compile Remove="Migrations\20180713133902_Initial.cs" />
+    <Compile Remove="Migrations\20180713134013_Initial.cs" />
+    <Compile Remove="Migrations\20180713135036_Initial.cs" />
+    <Compile Remove="Migrations\20180713135748_Initial.cs" />
+    <Compile Remove="Migrations\20180716114053_Initial.cs" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <PackageReference Include="Microsoft.EntityFrameworkCore" Version="2.1.1" />
+    <PackageReference Include="Microsoft.EntityFrameworkCore.SqlServer" Version="2.1.1" />
+    <PackageReference Include="Microsoft.EntityFrameworkCore.Tools" Version="2.1.1" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\BoekenApplicatie.Domain\BoekenApplicatie.Domain.csproj" />
+  </ItemGroup>
+
+</Project>

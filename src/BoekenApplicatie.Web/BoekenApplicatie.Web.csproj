@@ -1,0 +1,18 @@
+﻿<Project Sdk="Microsoft.NET.Sdk.Web">
+
+  <PropertyGroup>
+    <TargetFramework>netcoreapp2.1</TargetFramework>
+    <UserSecretsId>aspnet-BoekenApplicatie.Web-C291D405-81D1-4660-944C-853AECDA9DC2</UserSecretsId>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <PackageReference Include="Microsoft.AspNetCore.All" />
+    <PackageReference Include="Microsoft.VisualStudio.Web.CodeGeneration.Design" Version="2.1.1" PrivateAssets="All" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\BoekenApplicatie.Data\BoekenApplicatie.Data.csproj" />
+    <ProjectReference Include="..\BoekenApplicatie.Domain\BoekenApplicatie.Domain.csproj" />
+  </ItemGroup>
+
+</Project>
