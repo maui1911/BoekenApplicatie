@@ -9,12 +9,12 @@ namespace BoekenApplicatie.Domain.Models
     public Guid Id { get; set; }
     public string TitleName { get; set; }
     public string SeriesName { get; set; }
-    public Person Author { get; set; }
+    public Author Author { get; set; }
     public int Part { get; set; }
     public Category Category { get; set; }
     public string OriginalTitle { get; set; }
     public Language OriginalLangage { get; set; }
     public int OriginalReleasedYear { get; set; }
-    public Person Translator { get; set; }
+    public Translator Translator { get; set; }
   }
 }

@@ -20,7 +20,7 @@ namespace BoekenApplicatie.Domain.Models
     public int Edition { get; set; }
     public float Price { get; set; }
     public Language Language { get; set; }
-    public Person Artist { get; set; }
+    public Artist Artist { get; set; }
     public int YearBought { get; set; }
     public float PriceBought { get; set; }
     public string PriceReason { get; set; }

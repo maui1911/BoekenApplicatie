@@ -27,13 +27,14 @@ namespace BoekenApplicatie.Data.Migrations
                 columns: table => new
                 {
                     Id = table.Column<Guid>(nullable: false),
+                    Type = table.Column<int>(nullable: false),
                     LastName = table.Column<string>(nullable: true),
                     FirstName = table.Column<string>(nullable: true),
                     Prefix = table.Column<string>(nullable: true),
                     Address = table.Column<string>(nullable: true),
                     ZipCode = table.Column<string>(nullable: true),
                     Residence = table.Column<string>(nullable: true),
-                    Type = table.Column<int>(nullable: false)
+                    Discriminator = table.Column<string>(nullable: false)
                 },
                 constraints: table =>
                 {
@@ -119,7 +120,8 @@ namespace BoekenApplicatie.Data.Migrations
                     ArtistId = table.Column<Guid>(nullable: true),
                     YearBought = table.Column<int>(nullable: false),
                     PriceBought = table.Column<float>(nullable: false),
-                    PriceReason = table.Column<string>(nullable: true)
+                    PriceReason = table.Column<string>(nullable: true),
+                    TranslatorId = table.Column<Guid>(nullable: true)
                 },
                 constraints: table =>
                 {
@@ -134,6 +136,12 @@ namespace BoekenApplicatie.Data.Migrations
                         name: "FK_Books_Publishers_PublisherId",
                         column: x => x.PublisherId,
                         principalTable: "Publishers",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Restrict);
+                    table.ForeignKey(
+                        name: "FK_Books_Persons_TranslatorId",
+                        column: x => x.TranslatorId,
+                        principalTable: "Persons",
                         principalColumn: "Id",
                         onDelete: ReferentialAction.Restrict);
                 });
@@ -231,7 +239,8 @@ namespace BoekenApplicatie.Data.Migrations
                     BookId = table.Column<Guid>(nullable: true),
                     UserId = table.Column<Guid>(nullable: true),
                     StartLend = table.Column<DateTimeOffset>(nullable: true),
-                    EndLend = table.Column<DateTimeOffset>(nullable: true)
+                    EndLend = table.Column<DateTimeOffset>(nullable: true),
+                    LenderId = table.Column<Guid>(nullable: true)
                 },
                 constraints: table =>
                 {
@@ -240,6 +249,12 @@ namespace BoekenApplicatie.Data.Migrations
                         name: "FK_Lendings_Books_BookId",
                         column: x => x.BookId,
                         principalTable: "Books",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Restrict);
+                    table.ForeignKey(
+                        name: "FK_Lendings_Persons_LenderId",
+                        column: x => x.LenderId,
+                        principalTable: "Persons",
                         principalColumn: "Id",
                         onDelete: ReferentialAction.Restrict);
                     table.ForeignKey(
@@ -259,7 +274,8 @@ namespace BoekenApplicatie.Data.Migrations
                     Remarks = table.Column<string>(nullable: true),
                     BookId = table.Column<Guid>(nullable: true),
                     UserId = table.Column<Guid>(nullable: true),
-                    RatingDate = table.Column<DateTimeOffset>(nullable: true)
+                    RatingDate = table.Column<DateTimeOffset>(nullable: true),
+                    LenderId = table.Column<Guid>(nullable: true)
                 },
                 constraints: table =>
                 {
@@ -268,6 +284,12 @@ namespace BoekenApplicatie.Data.Migrations
                         name: "FK_Ratings_Books_BookId",
                         column: x => x.BookId,
                         principalTable: "Books",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Restrict);
+                    table.ForeignKey(
+                        name: "FK_Ratings_Persons_LenderId",
+                        column: x => x.LenderId,
+                        principalTable: "Persons",
                         principalColumn: "Id",
                         onDelete: ReferentialAction.Restrict);
                     table.ForeignKey(
@@ -372,9 +394,19 @@ namespace BoekenApplicatie.Data.Migrations
                 column: "PublisherId");
 
             migrationBuilder.CreateIndex(
+                name: "IX_Books_TranslatorId",
+                table: "Books",
+                column: "TranslatorId");
+
+            migrationBuilder.CreateIndex(
                 name: "IX_Lendings_BookId",
                 table: "Lendings",
                 column: "BookId");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_Lendings_LenderId",
+                table: "Lendings",
+                column: "LenderId");
 
             migrationBuilder.CreateIndex(
                 name: "IX_Lendings_UserId",
@@ -385,6 +417,11 @@ namespace BoekenApplicatie.Data.Migrations
                 name: "IX_Ratings_BookId",
                 table: "Ratings",
                 column: "BookId");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_Ratings_LenderId",
+                table: "Ratings",
+                column: "LenderId");
 
             migrationBuilder.CreateIndex(
                 name: "IX_Ratings_UserId",

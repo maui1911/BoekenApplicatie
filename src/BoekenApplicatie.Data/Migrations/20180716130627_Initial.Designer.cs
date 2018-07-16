@@ -10,7 +10,7 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace BoekenApplicatie.Data.Migrations
 {
     [DbContext(typeof(LibraryContext))]
-    [Migration("20180716114457_Initial")]
+    [Migration("20180716130627_Initial")]
     partial class Initial
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -99,6 +99,8 @@ namespace BoekenApplicatie.Data.Migrations
 
                     b.Property<int>("ReleasedYear");
 
+                    b.Property<Guid?>("TranslatorId");
+
                     b.Property<int>("YearBought");
 
                     b.HasKey("Id");
@@ -106,6 +108,8 @@ namespace BoekenApplicatie.Data.Migrations
                     b.HasIndex("ArtistId");
 
                     b.HasIndex("PublisherId");
+
+                    b.HasIndex("TranslatorId");
 
                     b.ToTable("Books");
                 });
@@ -119,6 +123,8 @@ namespace BoekenApplicatie.Data.Migrations
 
                     b.Property<DateTimeOffset?>("EndLend");
 
+                    b.Property<Guid?>("LenderId");
+
                     b.Property<DateTimeOffset?>("StartLend");
 
                     b.Property<Guid?>("UserId");
@@ -126,6 +132,8 @@ namespace BoekenApplicatie.Data.Migrations
                     b.HasKey("Id");
 
                     b.HasIndex("BookId");
+
+                    b.HasIndex("LenderId");
 
                     b.HasIndex("UserId");
 
@@ -138,6 +146,9 @@ namespace BoekenApplicatie.Data.Migrations
                         .ValueGeneratedOnAdd();
 
                     b.Property<string>("Address");
+
+                    b.Property<string>("Discriminator")
+                        .IsRequired();
 
                     b.Property<string>("FirstName");
 
@@ -154,6 +165,8 @@ namespace BoekenApplicatie.Data.Migrations
                     b.HasKey("Id");
 
                     b.ToTable("Persons");
+
+                    b.HasDiscriminator<string>("Discriminator").HasValue("Person");
                 });
 
             modelBuilder.Entity("BoekenApplicatie.Domain.Models.Publisher", b =>
@@ -175,6 +188,8 @@ namespace BoekenApplicatie.Data.Migrations
 
                     b.Property<Guid?>("BookId");
 
+                    b.Property<Guid?>("LenderId");
+
                     b.Property<double>("Rate");
 
                     b.Property<DateTimeOffset?>("RatingDate");
@@ -186,6 +201,8 @@ namespace BoekenApplicatie.Data.Migrations
                     b.HasKey("Id");
 
                     b.HasIndex("BookId");
+
+                    b.HasIndex("LenderId");
 
                     b.HasIndex("UserId");
 
@@ -339,22 +356,66 @@ namespace BoekenApplicatie.Data.Migrations
                     b.ToTable("AspNetUserTokens");
                 });
 
+            modelBuilder.Entity("BoekenApplicatie.Domain.Models.Artist", b =>
+                {
+                    b.HasBaseType("BoekenApplicatie.Domain.Models.Person");
+
+
+                    b.ToTable("Artist");
+
+                    b.HasDiscriminator().HasValue("Artist");
+                });
+
+            modelBuilder.Entity("BoekenApplicatie.Domain.Models.Author", b =>
+                {
+                    b.HasBaseType("BoekenApplicatie.Domain.Models.Person");
+
+
+                    b.ToTable("Author");
+
+                    b.HasDiscriminator().HasValue("Author");
+                });
+
+            modelBuilder.Entity("BoekenApplicatie.Domain.Models.Lender", b =>
+                {
+                    b.HasBaseType("BoekenApplicatie.Domain.Models.Person");
+
+
+                    b.ToTable("Lender");
+
+                    b.HasDiscriminator().HasValue("Lender");
+                });
+
+            modelBuilder.Entity("BoekenApplicatie.Domain.Models.Translator", b =>
+                {
+                    b.HasBaseType("BoekenApplicatie.Domain.Models.Person");
+
+
+                    b.ToTable("Translator");
+
+                    b.HasDiscriminator().HasValue("Translator");
+                });
+
             modelBuilder.Entity("BoekenApplicatie.Domain.Models.ApplicationUser", b =>
                 {
-                    b.HasOne("BoekenApplicatie.Domain.Models.Person", "Lender")
+                    b.HasOne("BoekenApplicatie.Domain.Models.Lender", "Lender")
                         .WithMany()
                         .HasForeignKey("LenderId");
                 });
 
             modelBuilder.Entity("BoekenApplicatie.Domain.Models.Book", b =>
                 {
-                    b.HasOne("BoekenApplicatie.Domain.Models.Person", "Artist")
-                        .WithMany()
+                    b.HasOne("BoekenApplicatie.Domain.Models.Artist", "Artist")
+                        .WithMany("Books")
                         .HasForeignKey("ArtistId");
 
                     b.HasOne("BoekenApplicatie.Domain.Models.Publisher", "Publisher")
                         .WithMany("Books")
                         .HasForeignKey("PublisherId");
+
+                    b.HasOne("BoekenApplicatie.Domain.Models.Translator")
+                        .WithMany("Books")
+                        .HasForeignKey("TranslatorId");
                 });
 
             modelBuilder.Entity("BoekenApplicatie.Domain.Models.Lending", b =>
@@ -363,8 +424,12 @@ namespace BoekenApplicatie.Data.Migrations
                         .WithMany("Lendings")
                         .HasForeignKey("BookId");
 
-                    b.HasOne("BoekenApplicatie.Domain.Models.ApplicationUser", "User")
+                    b.HasOne("BoekenApplicatie.Domain.Models.Lender")
                         .WithMany("Lendings")
+                        .HasForeignKey("LenderId");
+
+                    b.HasOne("BoekenApplicatie.Domain.Models.ApplicationUser", "User")
+                        .WithMany()
                         .HasForeignKey("UserId");
                 });
 
@@ -374,22 +439,26 @@ namespace BoekenApplicatie.Data.Migrations
                         .WithMany("Ratings")
                         .HasForeignKey("BookId");
 
-                    b.HasOne("BoekenApplicatie.Domain.Models.ApplicationUser", "User")
+                    b.HasOne("BoekenApplicatie.Domain.Models.Lender")
                         .WithMany("Ratings")
+                        .HasForeignKey("LenderId");
+
+                    b.HasOne("BoekenApplicatie.Domain.Models.ApplicationUser", "User")
+                        .WithMany()
                         .HasForeignKey("UserId");
                 });
 
             modelBuilder.Entity("BoekenApplicatie.Domain.Models.Title", b =>
                 {
-                    b.HasOne("BoekenApplicatie.Domain.Models.Person", "Author")
-                        .WithMany()
+                    b.HasOne("BoekenApplicatie.Domain.Models.Author", "Author")
+                        .WithMany("Titles")
                         .HasForeignKey("AuthorId");
 
                     b.HasOne("BoekenApplicatie.Domain.Models.Book")
                         .WithMany("Titles")
                         .HasForeignKey("BookId");
 
-                    b.HasOne("BoekenApplicatie.Domain.Models.Person", "Translator")
+                    b.HasOne("BoekenApplicatie.Domain.Models.Translator", "Translator")
                         .WithMany()
                         .HasForeignKey("TranslatorId");
                 });

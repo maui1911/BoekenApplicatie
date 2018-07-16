@@ -6,7 +6,7 @@ using System.Text;
 
 namespace BoekenApplicatie.Domain.Models
 {
-  public class Person : IModel
+  public abstract class Person : IModel
   {
     public Guid Id { get; set; }
     public string LastName { get; set; }
