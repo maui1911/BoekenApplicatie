@@ -14,11 +14,15 @@ namespace BoekenApplicatie.Data.Context
     {
     }
 
-    public DbSet<Book> Books { get; set; }
-    public DbSet<Lending> Lendings { get; set; }
-    public DbSet<Person> Persons { get; set; }
-    public DbSet<Rating> Ratings { get; set; }
-    public DbSet<Title> Titles { get; set; }
-    public DbSet<Publisher> Publishers { get; set; }
+    public DbSet<BoekenApplicatie.Domain.Models.Book> Books { get; set; }
+    public DbSet<BoekenApplicatie.Domain.Models.Lending> Lendings { get; set; }
+    public DbSet<BoekenApplicatie.Domain.Models.Rating> Ratings { get; set; }
+    public DbSet<BoekenApplicatie.Domain.Models.Title> Titles { get; set; }
+    public DbSet<BoekenApplicatie.Domain.Models.Publisher> Publishers { get; set; }
+    public DbSet<BoekenApplicatie.Domain.Models.Person> Persons { get; set; }
+    public DbSet<BoekenApplicatie.Domain.Models.Author> Authors { get; set; }
+    public DbSet<BoekenApplicatie.Domain.Models.Artist> Artists { get; set; }
+    public DbSet<BoekenApplicatie.Domain.Models.Translator> Translators { get; set; }
+    public DbSet<BoekenApplicatie.Domain.Models.Lender> Lenders { get; set; }
   }
 }

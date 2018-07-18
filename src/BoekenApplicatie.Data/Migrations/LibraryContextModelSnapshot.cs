@@ -34,8 +34,6 @@ namespace BoekenApplicatie.Data.Migrations
 
                     b.Property<bool>("EmailConfirmed");
 
-                    b.Property<Guid?>("LenderId");
-
                     b.Property<bool>("LockoutEnabled");
 
                     b.Property<DateTimeOffset?>("LockoutEnd");
@@ -60,8 +58,6 @@ namespace BoekenApplicatie.Data.Migrations
                         .HasMaxLength(256);
 
                     b.HasKey("Id");
-
-                    b.HasIndex("LenderId");
 
                     b.HasIndex("NormalizedEmail")
                         .HasName("EmailIndex");
@@ -125,15 +121,11 @@ namespace BoekenApplicatie.Data.Migrations
 
                     b.Property<DateTimeOffset?>("StartLend");
 
-                    b.Property<Guid?>("UserId");
-
                     b.HasKey("Id");
 
                     b.HasIndex("BookId");
 
                     b.HasIndex("LenderId");
-
-                    b.HasIndex("UserId");
 
                     b.ToTable("Lendings");
                 });
@@ -155,8 +147,6 @@ namespace BoekenApplicatie.Data.Migrations
                     b.Property<string>("Prefix");
 
                     b.Property<string>("Residence");
-
-                    b.Property<int>("Type");
 
                     b.Property<string>("ZipCode");
 
@@ -194,15 +184,11 @@ namespace BoekenApplicatie.Data.Migrations
 
                     b.Property<string>("Remarks");
 
-                    b.Property<Guid?>("UserId");
-
                     b.HasKey("Id");
 
                     b.HasIndex("BookId");
 
                     b.HasIndex("LenderId");
-
-                    b.HasIndex("UserId");
 
                     b.ToTable("Ratings");
                 });
@@ -378,6 +364,9 @@ namespace BoekenApplicatie.Data.Migrations
                 {
                     b.HasBaseType("BoekenApplicatie.Domain.Models.Person");
 
+                    b.Property<Guid?>("UserId");
+
+                    b.HasIndex("UserId");
 
                     b.ToTable("Lender");
 
@@ -392,13 +381,6 @@ namespace BoekenApplicatie.Data.Migrations
                     b.ToTable("Translator");
 
                     b.HasDiscriminator().HasValue("Translator");
-                });
-
-            modelBuilder.Entity("BoekenApplicatie.Domain.Models.ApplicationUser", b =>
-                {
-                    b.HasOne("BoekenApplicatie.Domain.Models.Lender", "Lender")
-                        .WithMany()
-                        .HasForeignKey("LenderId");
                 });
 
             modelBuilder.Entity("BoekenApplicatie.Domain.Models.Book", b =>
@@ -422,13 +404,9 @@ namespace BoekenApplicatie.Data.Migrations
                         .WithMany("Lendings")
                         .HasForeignKey("BookId");
 
-                    b.HasOne("BoekenApplicatie.Domain.Models.Lender")
+                    b.HasOne("BoekenApplicatie.Domain.Models.Lender", "Lender")
                         .WithMany("Lendings")
                         .HasForeignKey("LenderId");
-
-                    b.HasOne("BoekenApplicatie.Domain.Models.ApplicationUser", "User")
-                        .WithMany()
-                        .HasForeignKey("UserId");
                 });
 
             modelBuilder.Entity("BoekenApplicatie.Domain.Models.Rating", b =>
@@ -437,13 +415,9 @@ namespace BoekenApplicatie.Data.Migrations
                         .WithMany("Ratings")
                         .HasForeignKey("BookId");
 
-                    b.HasOne("BoekenApplicatie.Domain.Models.Lender")
+                    b.HasOne("BoekenApplicatie.Domain.Models.Lender", "Lender")
                         .WithMany("Ratings")
                         .HasForeignKey("LenderId");
-
-                    b.HasOne("BoekenApplicatie.Domain.Models.ApplicationUser", "User")
-                        .WithMany()
-                        .HasForeignKey("UserId");
                 });
 
             modelBuilder.Entity("BoekenApplicatie.Domain.Models.Title", b =>
@@ -504,6 +478,13 @@ namespace BoekenApplicatie.Data.Migrations
                         .WithMany()
                         .HasForeignKey("UserId")
                         .OnDelete(DeleteBehavior.Cascade);
+                });
+
+            modelBuilder.Entity("BoekenApplicatie.Domain.Models.Lender", b =>
+                {
+                    b.HasOne("BoekenApplicatie.Domain.Models.ApplicationUser", "User")
+                        .WithMany()
+                        .HasForeignKey("UserId");
                 });
 #pragma warning restore 612, 618
         }

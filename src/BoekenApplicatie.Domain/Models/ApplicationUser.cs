@@ -8,6 +8,5 @@ namespace BoekenApplicatie.Domain.Models
   public class ApplicationUser : IdentityUser<Guid>, IModel
   {
     public override Guid Id { get; set; }
-    public Lender Lender { get; set; }
   }
 }
