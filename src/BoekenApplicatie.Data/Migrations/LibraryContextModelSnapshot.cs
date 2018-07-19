@@ -26,6 +26,8 @@ namespace BoekenApplicatie.Data.Migrations
 
                     b.Property<int>("AccessFailedCount");
 
+                    b.Property<string>("Address");
+
                     b.Property<string>("ConcurrencyStamp")
                         .IsConcurrencyToken();
 
@@ -33,6 +35,10 @@ namespace BoekenApplicatie.Data.Migrations
                         .HasMaxLength(256);
 
                     b.Property<bool>("EmailConfirmed");
+
+                    b.Property<string>("FirstName");
+
+                    b.Property<string>("LastName");
 
                     b.Property<bool>("LockoutEnabled");
 
@@ -50,12 +56,18 @@ namespace BoekenApplicatie.Data.Migrations
 
                     b.Property<bool>("PhoneNumberConfirmed");
 
+                    b.Property<string>("Prefix");
+
+                    b.Property<string>("Residence");
+
                     b.Property<string>("SecurityStamp");
 
                     b.Property<bool>("TwoFactorEnabled");
 
                     b.Property<string>("UserName")
                         .HasMaxLength(256);
+
+                    b.Property<string>("ZipCode");
 
                     b.HasKey("Id");
 
@@ -93,6 +105,8 @@ namespace BoekenApplicatie.Data.Migrations
 
                     b.Property<int>("ReleasedYear");
 
+                    b.Property<string>("SerialNumber");
+
                     b.Property<Guid?>("TranslatorId");
 
                     b.Property<int>("YearBought");
@@ -117,15 +131,15 @@ namespace BoekenApplicatie.Data.Migrations
 
                     b.Property<DateTimeOffset?>("EndLend");
 
-                    b.Property<Guid?>("LenderId");
-
                     b.Property<DateTimeOffset?>("StartLend");
+
+                    b.Property<Guid?>("UserId");
 
                     b.HasKey("Id");
 
                     b.HasIndex("BookId");
 
-                    b.HasIndex("LenderId");
+                    b.HasIndex("UserId");
 
                     b.ToTable("Lendings");
                 });
@@ -135,8 +149,6 @@ namespace BoekenApplicatie.Data.Migrations
                     b.Property<Guid>("Id")
                         .ValueGeneratedOnAdd();
 
-                    b.Property<string>("Address");
-
                     b.Property<string>("Discriminator")
                         .IsRequired();
 
@@ -145,10 +157,6 @@ namespace BoekenApplicatie.Data.Migrations
                     b.Property<string>("LastName");
 
                     b.Property<string>("Prefix");
-
-                    b.Property<string>("Residence");
-
-                    b.Property<string>("ZipCode");
 
                     b.HasKey("Id");
 
@@ -176,19 +184,19 @@ namespace BoekenApplicatie.Data.Migrations
 
                     b.Property<Guid?>("BookId");
 
-                    b.Property<Guid?>("LenderId");
-
                     b.Property<double>("Rate");
 
                     b.Property<DateTimeOffset?>("RatingDate");
 
                     b.Property<string>("Remarks");
 
+                    b.Property<Guid?>("UserId");
+
                     b.HasKey("Id");
 
                     b.HasIndex("BookId");
 
-                    b.HasIndex("LenderId");
+                    b.HasIndex("UserId");
 
                     b.ToTable("Ratings");
                 });
@@ -360,19 +368,6 @@ namespace BoekenApplicatie.Data.Migrations
                     b.HasDiscriminator().HasValue("Author");
                 });
 
-            modelBuilder.Entity("BoekenApplicatie.Domain.Models.Lender", b =>
-                {
-                    b.HasBaseType("BoekenApplicatie.Domain.Models.Person");
-
-                    b.Property<Guid?>("UserId");
-
-                    b.HasIndex("UserId");
-
-                    b.ToTable("Lender");
-
-                    b.HasDiscriminator().HasValue("Lender");
-                });
-
             modelBuilder.Entity("BoekenApplicatie.Domain.Models.Translator", b =>
                 {
                     b.HasBaseType("BoekenApplicatie.Domain.Models.Person");
@@ -404,9 +399,9 @@ namespace BoekenApplicatie.Data.Migrations
                         .WithMany("Lendings")
                         .HasForeignKey("BookId");
 
-                    b.HasOne("BoekenApplicatie.Domain.Models.Lender", "Lender")
+                    b.HasOne("BoekenApplicatie.Domain.Models.ApplicationUser", "User")
                         .WithMany("Lendings")
-                        .HasForeignKey("LenderId");
+                        .HasForeignKey("UserId");
                 });
 
             modelBuilder.Entity("BoekenApplicatie.Domain.Models.Rating", b =>
@@ -415,9 +410,9 @@ namespace BoekenApplicatie.Data.Migrations
                         .WithMany("Ratings")
                         .HasForeignKey("BookId");
 
-                    b.HasOne("BoekenApplicatie.Domain.Models.Lender", "Lender")
+                    b.HasOne("BoekenApplicatie.Domain.Models.ApplicationUser", "User")
                         .WithMany("Ratings")
-                        .HasForeignKey("LenderId");
+                        .HasForeignKey("UserId");
                 });
 
             modelBuilder.Entity("BoekenApplicatie.Domain.Models.Title", b =>
@@ -478,13 +473,6 @@ namespace BoekenApplicatie.Data.Migrations
                         .WithMany()
                         .HasForeignKey("UserId")
                         .OnDelete(DeleteBehavior.Cascade);
-                });
-
-            modelBuilder.Entity("BoekenApplicatie.Domain.Models.Lender", b =>
-                {
-                    b.HasOne("BoekenApplicatie.Domain.Models.ApplicationUser", "User")
-                        .WithMany()
-                        .HasForeignKey("UserId");
                 });
 #pragma warning restore 612, 618
         }

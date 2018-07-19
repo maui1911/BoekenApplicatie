@@ -17,12 +17,17 @@ namespace BoekenApplicatie.Domain.Models
     public string FirstName { get; set; }
     [DisplayName("Tussenvoegsel")]
     public string Prefix { get; set; }
-    [DisplayName("Adres")]
-    public string Address { get; set; }
-    [DisplayName("Postcode")]
-    public string ZipCode { get; set; }
-    [DisplayName("Plaats")]
-    public string Residence { get; set; }
-   // public PersonType Type { get; set; }
+
+    [DisplayName("Naam")]
+    public string Name { get
+      {
+        if(string.IsNullOrWhiteSpace(Prefix))
+        {
+          return $"{FirstName} {LastName}";
+        }
+        return $"{FirstName} {Prefix} {LastName}";
+      }
+    }
+
   }
 }

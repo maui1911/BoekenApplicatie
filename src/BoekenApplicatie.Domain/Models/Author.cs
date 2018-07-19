@@ -10,6 +10,7 @@ namespace BoekenApplicatie.Domain.Models
     {
       Titles = new HashSet<Title>();
     }
+    
     public ICollection<Title> Titles { get; set; }
   }
 }

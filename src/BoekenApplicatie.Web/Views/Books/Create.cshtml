@@ -1,0 +1,111 @@
+﻿@model BoekenApplicatie.Web.ViewModels.BooksViewModel
+
+@{
+    ViewData["Title"] = "View";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+<h2>View</h2>
+
+<h4>BooksViewModel</h4>
+<hr />
+<div class="row">
+    <div class="col-md-4">
+      <form asp-action="Create">
+        <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+        <div class="form-group">
+          <label asp-for="TitleName" class="control-label"></label>
+          <input asp-for="TitleName" class="form-control" />
+          <span asp-validation-for="TitleName" class="text-danger"></span>
+        </div>
+        <div class="form-group">
+          <label asp-for="SeriesName" class="control-label"></label>
+          <input asp-for="SeriesName" class="form-control" />
+          <span asp-validation-for="SeriesName" class="text-danger"></span>
+        </div>
+        <div class="form-group">
+          <label asp-for="Language" class="control-label"></label>
+          <select asp-for="Language" asp-items="Html.GetEnumSelectList<BoekenApplicatie.Domain.Models.Language>()"></select>
+          <span asp-validation-for="Language" class="text-danger"></span>
+        </div>
+        <div class="form-group">
+          <label asp-for="Author" class="control-label"></label>
+          <select asp-for="AuthorId" asp-items="Model.Authors"></select>
+          <span asp-validation-for="Author" class="text-danger"></span>
+        </div>
+        <div class="form-group">
+          <label asp-for="ReleasedYear" class="control-label"></label>
+          <input asp-for="ReleasedYear" class="form-control" />
+          <span asp-validation-for="ReleasedYear" class="text-danger"></span>
+        </div>
+        <div class="form-group">
+          <label asp-for="Isbn" class="control-label"></label>
+          <input asp-for="Isbn" class="form-control" />
+          <span asp-validation-for="Isbn" class="text-danger"></span>
+        </div>
+        <div class="form-group">
+          <label asp-for="SerialNumber" class="control-label"></label>
+          <input asp-for="SerialNumber" class="form-control" />
+          <span asp-validation-for="SerialNumber" class="text-danger"></span>
+        </div>
+        <div class="form-group">
+          <label asp-for="Edition" class="control-label"></label>
+          <input asp-for="Edition" class="form-control" />
+          <span asp-validation-for="Edition" class="text-danger"></span>
+        </div>
+        <div class="form-group">
+          <label asp-for="Price" class="control-label"></label>
+          <input asp-for="Price" class="form-control" />
+          <span asp-validation-for="Price" class="text-danger"></span>
+        </div>
+        <div class="form-group">
+          <label asp-for="Part" class="control-label"></label>
+          <input asp-for="Part" class="form-control" />
+          <span asp-validation-for="Part" class="text-danger"></span>
+        </div>
+        <div class="form-group">
+          <label asp-for="Category" class="control-label"></label>
+          <select asp-for="Category" asp-items="Html.GetEnumSelectList<BoekenApplicatie.Domain.Models.Category>()"></select>
+          <span asp-validation-for="Category" class="text-danger"></span>
+        </div>
+        <div class="form-group">
+          <label asp-for="OriginalTitle" class="control-label"></label>
+          <input asp-for="OriginalTitle" class="form-control" />
+          <span asp-validation-for="OriginalTitle" class="text-danger"></span>
+        </div>
+        <div class="form-group">
+          <label asp-for="OriginalLangage" class="control-label"></label>
+          <select asp-for="OriginalLangage" asp-items="Html.GetEnumSelectList<BoekenApplicatie.Domain.Models.Language>()"></select>
+          <span asp-validation-for="OriginalLangage" class="text-danger"></span>
+        </div>
+        <div class="form-group">
+          <label asp-for="OriginalReleasedYear" class="control-label"></label>
+          <input asp-for="OriginalReleasedYear" class="form-control" />
+          <span asp-validation-for="OriginalReleasedYear" class="text-danger"></span>
+        </div>
+        <div class="form-group">
+          <label asp-for="YearBought" class="control-label"></label>
+          <input asp-for="YearBought" class="form-control" />
+          <span asp-validation-for="YearBought" class="text-danger"></span>
+        </div>
+        <div class="form-group">
+          <label asp-for="PriceBought" class="control-label"></label>
+          <input asp-for="PriceBought" class="form-control" />
+          <span asp-validation-for="PriceBought" class="text-danger"></span>
+        </div>
+        <div class="form-group">
+          <label asp-for="PriceReason" class="control-label"></label>
+          <input asp-for="PriceReason" class="form-control" />
+          <span asp-validation-for="PriceReason" class="text-danger"></span>
+        </div>
+        <div class="form-group">
+          <input type="submit" value="Create" class="btn btn-default" />
+        </div>
+      </form>
+    </div>
+</div>
+
+<div>
+    <a asp-action="Index">Back to List</a>
+</div>
+

@@ -40,11 +40,32 @@ namespace BoekenApplicatie.Data.Migrations
                     SecurityStamp = table.Column<string>(nullable: true),
                     ConcurrencyStamp = table.Column<string>(nullable: true),
                     PhoneNumber = table.Column<string>(nullable: true),
-                    Id = table.Column<Guid>(nullable: false)
+                    Id = table.Column<Guid>(nullable: false),
+                    LastName = table.Column<string>(nullable: true),
+                    FirstName = table.Column<string>(nullable: true),
+                    Prefix = table.Column<string>(nullable: true),
+                    Address = table.Column<string>(nullable: true),
+                    ZipCode = table.Column<string>(nullable: true),
+                    Residence = table.Column<string>(nullable: true)
                 },
                 constraints: table =>
                 {
                     table.PrimaryKey("PK_AspNetUsers", x => x.Id);
+                });
+
+            migrationBuilder.CreateTable(
+                name: "Persons",
+                columns: table => new
+                {
+                    Id = table.Column<Guid>(nullable: false),
+                    LastName = table.Column<string>(nullable: true),
+                    FirstName = table.Column<string>(nullable: true),
+                    Prefix = table.Column<string>(nullable: true),
+                    Discriminator = table.Column<string>(nullable: false)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_Persons", x => x.Id);
                 });
 
             migrationBuilder.CreateTable(
@@ -166,37 +187,13 @@ namespace BoekenApplicatie.Data.Migrations
                 });
 
             migrationBuilder.CreateTable(
-                name: "Persons",
-                columns: table => new
-                {
-                    Id = table.Column<Guid>(nullable: false),
-                    LastName = table.Column<string>(nullable: true),
-                    FirstName = table.Column<string>(nullable: true),
-                    Prefix = table.Column<string>(nullable: true),
-                    Address = table.Column<string>(nullable: true),
-                    ZipCode = table.Column<string>(nullable: true),
-                    Residence = table.Column<string>(nullable: true),
-                    Discriminator = table.Column<string>(nullable: false),
-                    UserId = table.Column<Guid>(nullable: true)
-                },
-                constraints: table =>
-                {
-                    table.PrimaryKey("PK_Persons", x => x.Id);
-                    table.ForeignKey(
-                        name: "FK_Persons_AspNetUsers_UserId",
-                        column: x => x.UserId,
-                        principalTable: "AspNetUsers",
-                        principalColumn: "Id",
-                        onDelete: ReferentialAction.Restrict);
-                });
-
-            migrationBuilder.CreateTable(
                 name: "Books",
                 columns: table => new
                 {
                     Id = table.Column<Guid>(nullable: false),
                     PublisherId = table.Column<Guid>(nullable: true),
                     Isbn = table.Column<string>(nullable: true),
+                    SerialNumber = table.Column<string>(nullable: true),
                     ReleasedYear = table.Column<int>(nullable: false),
                     Edition = table.Column<int>(nullable: false),
                     Price = table.Column<float>(nullable: false),
@@ -236,7 +233,7 @@ namespace BoekenApplicatie.Data.Migrations
                 {
                     Id = table.Column<Guid>(nullable: false),
                     BookId = table.Column<Guid>(nullable: true),
-                    LenderId = table.Column<Guid>(nullable: true),
+                    UserId = table.Column<Guid>(nullable: true),
                     StartLend = table.Column<DateTimeOffset>(nullable: true),
                     EndLend = table.Column<DateTimeOffset>(nullable: true)
                 },
@@ -250,9 +247,9 @@ namespace BoekenApplicatie.Data.Migrations
                         principalColumn: "Id",
                         onDelete: ReferentialAction.Restrict);
                     table.ForeignKey(
-                        name: "FK_Lendings_Persons_LenderId",
-                        column: x => x.LenderId,
-                        principalTable: "Persons",
+                        name: "FK_Lendings_AspNetUsers_UserId",
+                        column: x => x.UserId,
+                        principalTable: "AspNetUsers",
                         principalColumn: "Id",
                         onDelete: ReferentialAction.Restrict);
                 });
@@ -265,7 +262,7 @@ namespace BoekenApplicatie.Data.Migrations
                     Rate = table.Column<double>(nullable: false),
                     Remarks = table.Column<string>(nullable: true),
                     BookId = table.Column<Guid>(nullable: true),
-                    LenderId = table.Column<Guid>(nullable: true),
+                    UserId = table.Column<Guid>(nullable: true),
                     RatingDate = table.Column<DateTimeOffset>(nullable: true)
                 },
                 constraints: table =>
@@ -278,9 +275,9 @@ namespace BoekenApplicatie.Data.Migrations
                         principalColumn: "Id",
                         onDelete: ReferentialAction.Restrict);
                     table.ForeignKey(
-                        name: "FK_Ratings_Persons_LenderId",
-                        column: x => x.LenderId,
-                        principalTable: "Persons",
+                        name: "FK_Ratings_AspNetUsers_UserId",
+                        column: x => x.UserId,
+                        principalTable: "AspNetUsers",
                         principalColumn: "Id",
                         onDelete: ReferentialAction.Restrict);
                 });
@@ -384,13 +381,8 @@ namespace BoekenApplicatie.Data.Migrations
                 column: "BookId");
 
             migrationBuilder.CreateIndex(
-                name: "IX_Lendings_LenderId",
+                name: "IX_Lendings_UserId",
                 table: "Lendings",
-                column: "LenderId");
-
-            migrationBuilder.CreateIndex(
-                name: "IX_Persons_UserId",
-                table: "Persons",
                 column: "UserId");
 
             migrationBuilder.CreateIndex(
@@ -399,9 +391,9 @@ namespace BoekenApplicatie.Data.Migrations
                 column: "BookId");
 
             migrationBuilder.CreateIndex(
-                name: "IX_Ratings_LenderId",
+                name: "IX_Ratings_UserId",
                 table: "Ratings",
-                column: "LenderId");
+                column: "UserId");
 
             migrationBuilder.CreateIndex(
                 name: "IX_Titles_AuthorId",
@@ -449,6 +441,9 @@ namespace BoekenApplicatie.Data.Migrations
                 name: "AspNetRoles");
 
             migrationBuilder.DropTable(
+                name: "AspNetUsers");
+
+            migrationBuilder.DropTable(
                 name: "Books");
 
             migrationBuilder.DropTable(
@@ -456,9 +451,6 @@ namespace BoekenApplicatie.Data.Migrations
 
             migrationBuilder.DropTable(
                 name: "Publishers");
-
-            migrationBuilder.DropTable(
-                name: "AspNetUsers");
         }
     }
 }

@@ -23,6 +23,5 @@ namespace BoekenApplicatie.Data.Context
     public DbSet<BoekenApplicatie.Domain.Models.Author> Authors { get; set; }
     public DbSet<BoekenApplicatie.Domain.Models.Artist> Artists { get; set; }
     public DbSet<BoekenApplicatie.Domain.Models.Translator> Translators { get; set; }
-    public DbSet<BoekenApplicatie.Domain.Models.Lender> Lenders { get; set; }
   }
 }

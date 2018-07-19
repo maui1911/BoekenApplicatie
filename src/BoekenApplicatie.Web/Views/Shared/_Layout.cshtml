@@ -6,7 +6,7 @@
     <title>@ViewData["Title"] - BoekenApplicatie.Web</title>
 
     <environment include="Development">
-        <link rel="stylesheet" href="~/lib/bootstrap/dist/css/bootstrap.css" />
+        <link rel="stylesheet" href="~/lib/bootstrap/dist/css/bootstrap-journal.css" />
         <link rel="stylesheet" href="~/css/site.css" />
     </environment>
     <environment exclude="Development">
@@ -34,6 +34,8 @@
                 <li><a asp-area="" asp-controller="Authors" asp-action="Index">Auteur</a></li>
                 <li><a asp-area="" asp-controller="Artists" asp-action="Index">Kunstenaar</a></li>
                 <li><a asp-area="" asp-controller="Translators" asp-action="Index">Vertaler</a></li>
+                <li><a asp-area="" asp-controller="Publishers" asp-action="Index">Uitgever</a></li>
+                <li><a asp-area="" asp-controller="Books" asp-action="Index">Boek</a></li>
                 <li><a asp-area="" asp-controller="Home" asp-action="About">About</a></li>
                 <li><a asp-area="" asp-controller="Home" asp-action="Contact">Contact</a></li>
               </ul>

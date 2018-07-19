@@ -54,7 +54,7 @@ namespace BoekenApplicatie.Web.Controllers
         // more details see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Create([Bind("Id,LastName,FirstName,Prefix,Address,ZipCode,Residence")] Translator translator)
+        public async Task<IActionResult> Create([Bind("Id,LastName,FirstName,Prefix")] Translator translator)
         {
             if (ModelState.IsValid)
             {
@@ -87,7 +87,7 @@ namespace BoekenApplicatie.Web.Controllers
         // more details see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Edit(Guid id, [Bind("Id,LastName,FirstName,Prefix,Address,ZipCode,Residence")] Translator translator)
+        public async Task<IActionResult> Edit(Guid id, [Bind("Id,LastName,FirstName,Prefix")] Translator translator)
         {
             if (id != translator.Id)
             {

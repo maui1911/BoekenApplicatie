@@ -10,7 +10,7 @@ namespace BoekenApplicatie.Domain.Models
     public double Rate { get; set; }
     public string Remarks { get; set; }
     public Book Book { get; set; }
-    public Lender Lender { get; set; }
+    public ApplicationUser User { get; set; }
     public DateTimeOffset? RatingDate { get; set; }
   }
 }

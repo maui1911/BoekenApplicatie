@@ -16,6 +16,7 @@ namespace BoekenApplicatie.Domain.Models
     public ICollection<Title> Titles { get; set; }
     public Publisher Publisher { get; set; }
     public string Isbn { get; set; }
+    public string SerialNumber { get; set; }
     public int ReleasedYear { get; set; }
     public int Edition { get; set; }
     public float Price { get; set; }

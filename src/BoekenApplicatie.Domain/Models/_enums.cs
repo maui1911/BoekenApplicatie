@@ -4,23 +4,36 @@ using System.Text;
 
 namespace BoekenApplicatie.Domain.Models
 {
-   public enum Category
+  public enum Category
   {
-
+    Cyberpunk,
+    Detective,
+    Fantasy,
+    Horror,
+    Prehistorische_Roman,
+    Science_Fiction,
+    Space_Opera,
+    Sword_and_Sorcery,
+    Thriller,
+    Verhalenbundel,
+    Verhalen_Diverse_Auteurs
   }
 
-    public enum Language
+  public enum Language
   {
-    NL,
-    EN,
-    DE
-  }
-
-  public enum PersonType
-  {
-    Auteur,
-    Vertaler,
-    Kunstenaar,
-    Lener
+    Argentijns,
+    Engels,
+    Deens,
+    Duits,
+    Frans,
+    Italiaans,
+    Slavisch,
+    Japans,
+    Nederlands,
+    Pools,
+    Russisch,
+    Spaans,
+    TsjechoSlowaaks,
+    Zweeds
   }
 }

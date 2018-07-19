@@ -11,7 +11,7 @@ using Microsoft.AspNetCore.Authorization;
 
 namespace BoekenApplicatie.Web.Controllers
 {
-  [Authorize]
+
     public class AuthorsController : Controller
     {
         private readonly LibraryContext _context;
@@ -56,7 +56,7 @@ namespace BoekenApplicatie.Web.Controllers
         // more details see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Create([Bind("Id,LastName,FirstName,Prefix,Address,ZipCode,Residence")] Author author)
+        public async Task<IActionResult> Create([Bind("Id,LastName,FirstName,Prefix")] Author author)
         {
             if (ModelState.IsValid)
             {
@@ -89,7 +89,7 @@ namespace BoekenApplicatie.Web.Controllers
         // more details see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Edit(Guid id, [Bind("Id,LastName,FirstName,Prefix,Address,ZipCode,Residence")] Author author)
+        public async Task<IActionResult> Edit(Guid id, [Bind("Id,LastName,FirstName,Prefix")] Author author)
         {
             if (id != author.Id)
             {
