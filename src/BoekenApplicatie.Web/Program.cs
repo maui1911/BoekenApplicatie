@@ -21,6 +21,7 @@ namespace BoekenApplicatie.Web
             .MinimumLevel.Override("Microsoft", LogEventLevel.Information)
             .Enrich.FromLogContext()
             .WriteTo.Console()
+            .WriteTo.File("log.txt")
             .CreateLogger();
 
             CreateWebHostBuilder(args).Build().Run();
