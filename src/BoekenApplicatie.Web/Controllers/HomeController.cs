@@ -3,14 +3,21 @@ using System.Collections.Generic;
 using System.Diagnostics;
 using System.Linq;
 using System.Threading.Tasks;
+using BoekenApplicatie.Domain.Models;
 using Microsoft.AspNetCore.Mvc;
 using BoekenApplicatie.Web.ViewModels;
+using Microsoft.AspNetCore.Identity;
 
 namespace BoekenApplicatie.Web.Controllers
 {
     public class HomeController : Controller
     {
-        public IActionResult Index()
+      
+      public HomeController()
+      {
+      }
+
+      public IActionResult Index()
         {
             return View();
         }
@@ -39,5 +46,7 @@ namespace BoekenApplicatie.Web.Controllers
         {
             return View(new ErrorViewModel { RequestId = Activity.Current?.Id ?? HttpContext.TraceIdentifier });
         }
+
+      
     }
 }
