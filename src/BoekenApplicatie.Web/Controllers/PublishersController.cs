@@ -7,6 +7,7 @@ using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
 using BoekenApplicatie.Data.Context;
 using BoekenApplicatie.Domain.Models;
+using Microsoft.AspNetCore.Authorization;
 
 namespace BoekenApplicatie.Web.Controllers
 {
@@ -43,8 +44,9 @@ namespace BoekenApplicatie.Web.Controllers
             return View(publisher);
         }
 
-        // GET: Publishers/Create
-        public IActionResult Create()
+    // GET: Publishers/Create
+      [Authorize(Roles = "Admin")]
+    public IActionResult Create()
         {
             return View();
         }
@@ -54,7 +56,8 @@ namespace BoekenApplicatie.Web.Controllers
         // more details see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Create([Bind("Id,Name")] Publisher publisher)
+        [Authorize(Roles = "Admin")]
+    public async Task<IActionResult> Create([Bind("Id,Name")] Publisher publisher)
         {
             if (ModelState.IsValid)
             {
@@ -66,8 +69,9 @@ namespace BoekenApplicatie.Web.Controllers
             return View(publisher);
         }
 
-        // GET: Publishers/Edit/5
-        public async Task<IActionResult> Edit(Guid? id)
+    // GET: Publishers/Edit/5
+      [Authorize(Roles = "Admin")]
+    public async Task<IActionResult> Edit(Guid? id)
         {
             if (id == null)
             {
@@ -87,7 +91,8 @@ namespace BoekenApplicatie.Web.Controllers
         // more details see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Edit(Guid id, [Bind("Id,Name")] Publisher publisher)
+        [Authorize(Roles = "Admin")]
+    public async Task<IActionResult> Edit(Guid id, [Bind("Id,Name")] Publisher publisher)
         {
             if (id != publisher.Id)
             {
@@ -117,8 +122,9 @@ namespace BoekenApplicatie.Web.Controllers
             return View(publisher);
         }
 
-        // GET: Publishers/Delete/5
-        public async Task<IActionResult> Delete(Guid? id)
+    // GET: Publishers/Delete/5
+      [Authorize(Roles = "Admin")]
+    public async Task<IActionResult> Delete(Guid? id)
         {
             if (id == null)
             {
@@ -135,8 +141,9 @@ namespace BoekenApplicatie.Web.Controllers
             return View(publisher);
         }
 
-        // POST: Publishers/Delete/5
-        [HttpPost, ActionName("Delete")]
+    // POST: Publishers/Delete/5
+      [Authorize(Roles = "Admin")]
+    [HttpPost, ActionName("Delete")]
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> DeleteConfirmed(Guid id)
         {

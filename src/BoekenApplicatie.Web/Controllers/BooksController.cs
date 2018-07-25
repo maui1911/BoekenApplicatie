@@ -7,6 +7,7 @@ using BoekenApplicatie.Domain.Models;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using BoekenApplicatie.Data.Context;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.EntityFrameworkCore;
 
 namespace BoekenApplicatie.Web.Controllers
@@ -60,7 +61,7 @@ namespace BoekenApplicatie.Web.Controllers
     {
       return View();
     }
-
+    [Authorize(Roles = "Admin")]
     // GET: Books/Create
     public async Task<ActionResult> Create()
     {
@@ -73,6 +74,7 @@ namespace BoekenApplicatie.Web.Controllers
     }
 
     // POST: Books/Create
+    [Authorize(Roles = "Admin")]
     [HttpPost]
     [ValidateAntiForgeryToken]
     public async Task<ActionResult> Create(BooksViewModel viewModel)
@@ -116,12 +118,14 @@ namespace BoekenApplicatie.Web.Controllers
     }
 
     // GET: Books/Edit/5
+    [Authorize(Roles = "Admin")]
     public ActionResult Edit(int id)
     {
       return View();
     }
 
     // POST: Books/Edit/5
+    [Authorize(Roles = "Admin")]
     [HttpPost]
     [ValidateAntiForgeryToken]
     public ActionResult Edit(int id, IFormCollection collection)
@@ -139,12 +143,14 @@ namespace BoekenApplicatie.Web.Controllers
     }
 
     // GET: Books/Delete/5
+    [Authorize(Roles = "Admin")]
     public ActionResult Delete(int id)
     {
       return View();
     }
 
     // POST: Books/Delete/5
+    [Authorize(Roles = "Admin")]
     [HttpPost]
     [ValidateAntiForgeryToken]
     public ActionResult Delete(int id, IFormCollection collection)

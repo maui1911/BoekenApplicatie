@@ -44,17 +44,18 @@ namespace BoekenApplicatie.Web.Controllers
 
             return View(author);
         }
-
-        // GET: Authors/Create
-        public IActionResult Create()
+      [Authorize(Roles = "Admin")]
+    // GET: Authors/Create
+    public IActionResult Create()
         {
             return View();
         }
 
-        // POST: Authors/Create
-        // To protect from overposting attacks, please enable the specific properties you want to bind to, for 
-        // more details see http://go.microsoft.com/fwlink/?LinkId=317598.
-        [HttpPost]
+    // POST: Authors/Create
+    // To protect from overposting attacks, please enable the specific properties you want to bind to, for 
+    // more details see http://go.microsoft.com/fwlink/?LinkId=317598.
+    [Authorize(Roles = "Admin")]
+    [HttpPost]
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> Create([Bind("Id,LastName,FirstName,Prefix")] Author author)
         {
@@ -68,8 +69,9 @@ namespace BoekenApplicatie.Web.Controllers
             return View(author);
         }
 
-        // GET: Authors/Edit/5
-        public async Task<IActionResult> Edit(Guid? id)
+    // GET: Authors/Edit/5
+      [Authorize(Roles = "Admin")]
+    public async Task<IActionResult> Edit(Guid? id)
         {
             if (id == null)
             {
@@ -84,10 +86,11 @@ namespace BoekenApplicatie.Web.Controllers
             return View(author);
         }
 
-        // POST: Authors/Edit/5
-        // To protect from overposting attacks, please enable the specific properties you want to bind to, for 
-        // more details see http://go.microsoft.com/fwlink/?LinkId=317598.
-        [HttpPost]
+    // POST: Authors/Edit/5
+    // To protect from overposting attacks, please enable the specific properties you want to bind to, for 
+    // more details see http://go.microsoft.com/fwlink/?LinkId=317598.
+    [Authorize(Roles = "Admin")]
+    [HttpPost]
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> Edit(Guid id, [Bind("Id,LastName,FirstName,Prefix")] Author author)
         {
@@ -118,9 +121,9 @@ namespace BoekenApplicatie.Web.Controllers
             }
             return View(author);
         }
-
-        // GET: Authors/Delete/5
-        public async Task<IActionResult> Delete(Guid? id)
+      [Authorize(Roles = "Admin")]
+    // GET: Authors/Delete/5
+    public async Task<IActionResult> Delete(Guid? id)
         {
             if (id == null)
             {
@@ -137,8 +140,9 @@ namespace BoekenApplicatie.Web.Controllers
             return View(author);
         }
 
-        // POST: Authors/Delete/5
-        [HttpPost, ActionName("Delete")]
+    // POST: Authors/Delete/5
+      [Authorize(Roles = "Admin")]
+    [HttpPost, ActionName("Delete")]
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> DeleteConfirmed(Guid id)
         {

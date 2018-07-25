@@ -11,23 +11,13 @@ namespace BoekenApplicatie.Domain.Models
   {
     public Guid Id { get; set; }
 
-    [DisplayName("Achternaam")]
-    public string LastName { get; set; }
-    [DisplayName("Voornaam")]
-    public string FirstName { get; set; }
-    [DisplayName("Tussenvoegsel")]
-    public string Prefix { get; set; }
+    [DisplayName("Achternaam")] public string LastName { get; set; }
+    [DisplayName("Voornaam")] public string FirstName { get; set; }
+    [DisplayName("Tussenvoegsel")] public string Prefix { get; set; }
 
     [DisplayName("Naam")]
-    public string Name { get
-      {
-        if(string.IsNullOrWhiteSpace(Prefix))
-        {
-          return $"{FirstName} {LastName}";
-        }
-        return $"{FirstName} {Prefix} {LastName}";
-      }
-    }
-
+    public string Name => string.IsNullOrWhiteSpace(Prefix)
+      ? $"{FirstName} {LastName}"
+      : $"{FirstName} {Prefix} {LastName}";
   }
 }

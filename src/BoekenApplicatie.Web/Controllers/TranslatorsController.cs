@@ -7,6 +7,7 @@ using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
 using BoekenApplicatie.Data.Context;
 using BoekenApplicatie.Domain.Models;
+using Microsoft.AspNetCore.Authorization;
 
 namespace BoekenApplicatie.Web.Controllers
 {
@@ -43,16 +44,18 @@ namespace BoekenApplicatie.Web.Controllers
             return View(translator);
         }
 
-        // GET: Translators/Create
-        public IActionResult Create()
+    // GET: Translators/Create
+      [Authorize(Roles = "Admin")]
+    public IActionResult Create()
         {
             return View();
         }
 
-        // POST: Translators/Create
-        // To protect from overposting attacks, please enable the specific properties you want to bind to, for 
-        // more details see http://go.microsoft.com/fwlink/?LinkId=317598.
-        [HttpPost]
+    // POST: Translators/Create
+    // To protect from overposting attacks, please enable the specific properties you want to bind to, for 
+    // more details see http://go.microsoft.com/fwlink/?LinkId=317598.
+    [Authorize(Roles = "Admin")]
+    [HttpPost]
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> Create([Bind("Id,LastName,FirstName,Prefix")] Translator translator)
         {
@@ -66,8 +69,9 @@ namespace BoekenApplicatie.Web.Controllers
             return View(translator);
         }
 
-        // GET: Translators/Edit/5
-        public async Task<IActionResult> Edit(Guid? id)
+    // GET: Translators/Edit/5
+      [Authorize(Roles = "Admin")]
+    public async Task<IActionResult> Edit(Guid? id)
         {
             if (id == null)
             {
@@ -82,10 +86,11 @@ namespace BoekenApplicatie.Web.Controllers
             return View(translator);
         }
 
-        // POST: Translators/Edit/5
-        // To protect from overposting attacks, please enable the specific properties you want to bind to, for 
-        // more details see http://go.microsoft.com/fwlink/?LinkId=317598.
-        [HttpPost]
+    // POST: Translators/Edit/5
+    // To protect from overposting attacks, please enable the specific properties you want to bind to, for 
+    // more details see http://go.microsoft.com/fwlink/?LinkId=317598.
+    [Authorize(Roles = "Admin")]
+    [HttpPost]
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> Edit(Guid id, [Bind("Id,LastName,FirstName,Prefix")] Translator translator)
         {
@@ -117,8 +122,9 @@ namespace BoekenApplicatie.Web.Controllers
             return View(translator);
         }
 
-        // GET: Translators/Delete/5
-        public async Task<IActionResult> Delete(Guid? id)
+    // GET: Translators/Delete/5
+      [Authorize(Roles = "Admin")]
+    public async Task<IActionResult> Delete(Guid? id)
         {
             if (id == null)
             {
@@ -135,8 +141,9 @@ namespace BoekenApplicatie.Web.Controllers
             return View(translator);
         }
 
-        // POST: Translators/Delete/5
-        [HttpPost, ActionName("Delete")]
+    // POST: Translators/Delete/5
+      [Authorize(Roles = "Admin")]
+    [HttpPost, ActionName("Delete")]
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> DeleteConfirmed(Guid id)
         {
