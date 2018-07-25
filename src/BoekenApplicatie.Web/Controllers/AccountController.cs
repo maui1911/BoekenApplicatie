@@ -7,6 +7,7 @@ using AutoMapper;
 using BoekenApplicatie.Data.Context;
 using BoekenApplicatie.Domain.Models;
 using BoekenApplicatie.Web.Areas.Identity.Pages.Account;
+using BoekenApplicatie.Web.Extensions;
 using BoekenApplicatie.Web.ViewModels;
 using Microsoft.AspNetCore.Authentication;
 using Microsoft.AspNetCore.Authorization;
@@ -101,7 +102,12 @@ namespace BoekenApplicatie.Web.Controllers
 
       if (result.Succeeded)
       {
-        return View("Index");
+        if (User.Identity.Name == user.UserName)
+        {
+          await HttpContext.RefreshLoginAsync();
+        }
+
+        return RedirectToAction("Index");
       }
 
       foreach (var error in result.Errors)
@@ -117,7 +123,7 @@ namespace BoekenApplicatie.Web.Controllers
     public async Task<IActionResult> Logout(string returnUrl = null)
     {
       await _signInManager.SignOutAsync();
-      return returnUrl != null ? (IActionResult) LocalRedirect(returnUrl) : View("Index");
+      return returnUrl != null ? (IActionResult) LocalRedirect(returnUrl) : RedirectToAction("Index", "Home");
     }
 
     [HttpGet]

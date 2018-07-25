@@ -64,6 +64,12 @@ namespace BoekenApplicatie.Web
         options.SlidingExpiration = true;
       });
 
+      services.Configure<SecurityStampValidatorOptions>(options =>
+      {
+        // enables immediate logout, after updating the user's stat.
+        options.ValidationInterval = TimeSpan.FromMinutes(5);
+      });
+
       services.AddMvc().SetCompatibilityVersion(CompatibilityVersion.Version_2_1);
       services.AddAutoMapper(typeof(Startup));
     }
@@ -81,15 +87,13 @@ namespace BoekenApplicatie.Web
         app.UseExceptionHandler("/Home/Error");
         app.UseHsts();
       }
-
-
+      
       app.UseHttpsRedirection();
       app.UseStaticFiles();
       app.UseCookiePolicy();
 
       app.UseAuthentication();
-
-
+      
       app.UseMvc(routes =>
       {
         routes.MapRoute(
