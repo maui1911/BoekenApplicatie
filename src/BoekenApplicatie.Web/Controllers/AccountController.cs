@@ -162,6 +162,12 @@ namespace BoekenApplicatie.Web.Controllers
     }
 
     [HttpGet]
+    public IActionResult AccessDenied()
+    {
+      return View();
+    }
+
+    [HttpGet]
     public async Task<IActionResult> Login(string returnUrl = null)
     {
       var viewModel = new LoginViewModel();
