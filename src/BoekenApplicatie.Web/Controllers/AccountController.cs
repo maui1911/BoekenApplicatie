@@ -8,6 +8,7 @@ using BoekenApplicatie.Data.Context;
 using BoekenApplicatie.Domain.Models;
 using BoekenApplicatie.Web.Areas.Identity.Pages.Account;
 using BoekenApplicatie.Web.Extensions;
+using BoekenApplicatie.Web.Services;
 using BoekenApplicatie.Web.ViewModels;
 using Microsoft.AspNetCore.Authentication;
 using Microsoft.AspNetCore.Authorization;
@@ -28,15 +29,17 @@ namespace BoekenApplicatie.Web.Controllers
     private readonly RoleManager<IdentityRole<Guid>> _roleManager;
     private readonly LibraryContext _context;
     private readonly IMapper _mapper;
+    private readonly IMailservice _mailservice;
     
     public AccountController(SignInManager<ApplicationUser> signInManager, UserManager<ApplicationUser> userManager,
-      IMapper mapper, LibraryContext context, RoleManager<IdentityRole<Guid>> roleManager)
+      IMapper mapper, LibraryContext context, RoleManager<IdentityRole<Guid>> roleManager, IMailservice mailservice)
     {
       _signInManager = signInManager;
       _userManager = userManager;
       _mapper = mapper;
       _context = context;
       _roleManager = roleManager;
+      _mailservice = mailservice;
     }
 
     [Authorize]
@@ -163,6 +166,91 @@ namespace BoekenApplicatie.Web.Controllers
 
     [HttpGet]
     public IActionResult AccessDenied()
+    {
+      return View();
+    }
+
+    public IActionResult ForgotPassword()
+    {
+      return View(new ForgotPasswordViewModel()); 
+    }
+
+    [ValidateAntiForgeryToken]
+    [HttpPost]
+    public async Task<IActionResult> ForgotPassword(ForgotPasswordViewModel vm)
+    {
+      if (!ModelState.IsValid) return View(vm);
+
+      var user = await _userManager.FindByEmailAsync(vm.Email);
+      if (user == null )//|| !(await _userManager.IsEmailConfirmedAsync(user)))
+      {
+        // Don't reveal that the user does not exist or is not confirmed
+        return RedirectToAction("ForgotPasswordConfirmation");
+      }
+
+      // For more information on how to enable account confirmation and password reset please 
+      // visit https://go.microsoft.com/fwlink/?LinkID=532713
+      var code = await _userManager.GeneratePasswordResetTokenAsync(user);
+      var callbackUrl = Url.Action("ResetPassword", "Account",
+        values: new { code },
+        protocol: Request.Scheme);
+
+      await _mailservice.SendMailAsync(
+        vm.Email,
+        "Reset Password",
+        $"Please reset your password by <a href='{HtmlEncoder.Default.Encode(callbackUrl)}'>clicking here</a>.");
+
+      return RedirectToAction("ForgotPasswordConfirmation");
+    }
+
+    [HttpGet]
+    public IActionResult ForgotPasswordConfirmation()
+    {
+      return View();
+    }
+
+    [HttpGet]
+    public IActionResult ResetPassword(string code = null)
+    {
+      if (code == null)
+      {
+        return BadRequest("A code must be supplied for password reset.");
+      }
+
+      return View(new ResetPasswordViewModel {Code = code});
+    }
+
+    [HttpPost]
+    [ValidateAntiForgeryToken]
+    public async Task<IActionResult> ResetPassword(ResetPasswordViewModel vm)
+    {
+      if (!ModelState.IsValid)
+      {
+        return View(vm);
+      }
+
+      var user = await _userManager.FindByEmailAsync(vm.Email);
+      if (user == null)
+      {
+        // Don't reveal that the user does not exist
+        return RedirectToAction("ResetPasswordConfirmation");
+      }
+
+      var result = await _userManager.ResetPasswordAsync(user, vm.Code, vm.Password);
+      if (result.Succeeded)
+      {
+        return RedirectToAction("ResetPasswordConfirmation");
+      }
+
+      foreach (var error in result.Errors)
+      {
+        ModelState.AddModelError(string.Empty, error.Description);
+      }
+      return View(vm);
+    }
+
+    [HttpGet]
+    public IActionResult ResetPasswordConfirmation()
     {
       return View();
     }

@@ -15,6 +15,8 @@ using Microsoft.Extensions.DependencyInjection;
 using BoekenApplicatie.Data.Context;
 using BoekenApplicatie.Domain.Models;
 using BoekenApplicatie.Web.Configuration;
+using BoekenApplicatie.Web.Options;
+using BoekenApplicatie.Web.Services;
 using Microsoft.AspNetCore.Authentication.Cookies;
 
 namespace BoekenApplicatie.Web
@@ -50,6 +52,7 @@ namespace BoekenApplicatie.Web
           options.Password.RequireNonAlphanumeric = false;
           options.Password.RequireUppercase = false;
         })
+        .AddDefaultTokenProviders()
         .AddEntityFrameworkStores<LibraryContext>();
 
       services.ConfigureApplicationCookie(options =>
@@ -69,6 +72,14 @@ namespace BoekenApplicatie.Web
         // enables immediate logout, after updating the user's stat.
         options.ValidationInterval = TimeSpan.FromMinutes(5);
       });
+
+      services.Configure<MailOptions>(options =>
+      {
+        options.ApiKey = Configuration.GetSection("SENDGRID_API_KEY").Value;
+        options.FromAddress = Configuration.GetValue<string>("Mail:FromAddress");
+        options.FromAddressName = Configuration.GetValue<string>("Mail:FromAddressName");
+      });
+      services.AddSingleton<IMailservice, SendGridMailService>();
 
       services.AddMvc().SetCompatibilityVersion(CompatibilityVersion.Version_2_1);
       services.AddAutoMapper(typeof(Startup));
