@@ -35,7 +35,7 @@ namespace BoekenApplicatie.Web.ViewModels
     [DisplayName("Druk")]
     public int Edition { get; set; }
     [DisplayName("Prijs")]
-    public float Price { get; set; }
+    public decimal Price { get; set; }
     [DisplayName("Deel")]
     public int Part { get; set; }
     [DisplayName("Categorie")]
@@ -53,7 +53,7 @@ namespace BoekenApplicatie.Web.ViewModels
     [DisplayName("Aanschaf jaar")]
     public int YearBought { get; set; }
     [DisplayName("Aanschaf prijs")]
-    public float PriceBought { get; set; }
+    public decimal PriceBought { get; set; }
     [DisplayName("Prijs reden")]
     public string PriceReason { get; set; }
 

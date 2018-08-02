@@ -26,20 +26,20 @@ namespace BoekenApplicatie.Data.Migrations
                 name: "AspNetUsers",
                 columns: table => new
                 {
-                    AccessFailedCount = table.Column<int>(nullable: false),
-                    EmailConfirmed = table.Column<bool>(nullable: false),
-                    LockoutEnabled = table.Column<bool>(nullable: false),
-                    LockoutEnd = table.Column<DateTimeOffset>(nullable: true),
-                    PhoneNumberConfirmed = table.Column<bool>(nullable: false),
-                    TwoFactorEnabled = table.Column<bool>(nullable: false),
                     UserName = table.Column<string>(maxLength: 256, nullable: true),
                     NormalizedUserName = table.Column<string>(maxLength: 256, nullable: true),
                     Email = table.Column<string>(maxLength: 256, nullable: true),
                     NormalizedEmail = table.Column<string>(maxLength: 256, nullable: true),
+                    EmailConfirmed = table.Column<bool>(nullable: false),
                     PasswordHash = table.Column<string>(nullable: true),
                     SecurityStamp = table.Column<string>(nullable: true),
                     ConcurrencyStamp = table.Column<string>(nullable: true),
                     PhoneNumber = table.Column<string>(nullable: true),
+                    PhoneNumberConfirmed = table.Column<bool>(nullable: false),
+                    TwoFactorEnabled = table.Column<bool>(nullable: false),
+                    LockoutEnd = table.Column<DateTimeOffset>(nullable: true),
+                    LockoutEnabled = table.Column<bool>(nullable: false),
+                    AccessFailedCount = table.Column<int>(nullable: false),
                     Id = table.Column<Guid>(nullable: false),
                     LastName = table.Column<string>(nullable: true),
                     FirstName = table.Column<string>(nullable: true),
@@ -126,8 +126,8 @@ namespace BoekenApplicatie.Data.Migrations
                 name: "AspNetUserLogins",
                 columns: table => new
                 {
-                    LoginProvider = table.Column<string>(maxLength: 128, nullable: false),
-                    ProviderKey = table.Column<string>(maxLength: 128, nullable: false),
+                    LoginProvider = table.Column<string>(nullable: false),
+                    ProviderKey = table.Column<string>(nullable: false),
                     ProviderDisplayName = table.Column<string>(nullable: true),
                     UserId = table.Column<Guid>(nullable: false)
                 },
@@ -171,8 +171,8 @@ namespace BoekenApplicatie.Data.Migrations
                 columns: table => new
                 {
                     UserId = table.Column<Guid>(nullable: false),
-                    LoginProvider = table.Column<string>(maxLength: 128, nullable: false),
-                    Name = table.Column<string>(maxLength: 128, nullable: false),
+                    LoginProvider = table.Column<string>(nullable: false),
+                    Name = table.Column<string>(nullable: false),
                     Value = table.Column<string>(nullable: true)
                 },
                 constraints: table =>
@@ -196,11 +196,11 @@ namespace BoekenApplicatie.Data.Migrations
                     SerialNumber = table.Column<string>(nullable: true),
                     ReleasedYear = table.Column<int>(nullable: false),
                     Edition = table.Column<int>(nullable: false),
-                    Price = table.Column<float>(nullable: false),
+                    Price = table.Column<decimal>(nullable: false),
                     Language = table.Column<int>(nullable: false),
                     ArtistId = table.Column<Guid>(nullable: true),
                     YearBought = table.Column<int>(nullable: false),
-                    PriceBought = table.Column<float>(nullable: false),
+                    PriceBought = table.Column<decimal>(nullable: false),
                     PriceReason = table.Column<string>(nullable: true),
                     TranslatorId = table.Column<Guid>(nullable: true)
                 },
@@ -292,6 +292,7 @@ namespace BoekenApplicatie.Data.Migrations
                     AuthorId = table.Column<Guid>(nullable: true),
                     Part = table.Column<int>(nullable: false),
                     Category = table.Column<int>(nullable: false),
+                    Genre = table.Column<int>(nullable: false),
                     OriginalTitle = table.Column<string>(nullable: true),
                     OriginalLangage = table.Column<int>(nullable: false),
                     OriginalReleasedYear = table.Column<int>(nullable: false),

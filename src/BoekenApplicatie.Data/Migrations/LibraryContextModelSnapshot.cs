@@ -95,9 +95,9 @@ namespace BoekenApplicatie.Data.Migrations
 
                     b.Property<int>("Language");
 
-                    b.Property<float>("Price");
+                    b.Property<decimal>("Price");
 
-                    b.Property<float>("PriceBought");
+                    b.Property<decimal>("PriceBought");
 
                     b.Property<string>("PriceReason");
 
@@ -212,6 +212,8 @@ namespace BoekenApplicatie.Data.Migrations
 
                     b.Property<int>("Category");
 
+                    b.Property<int>("Genre");
+
                     b.Property<int>("OriginalLangage");
 
                     b.Property<int>("OriginalReleasedYear");
@@ -301,11 +303,9 @@ namespace BoekenApplicatie.Data.Migrations
 
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityUserLogin<System.Guid>", b =>
                 {
-                    b.Property<string>("LoginProvider")
-                        .HasMaxLength(128);
+                    b.Property<string>("LoginProvider");
 
-                    b.Property<string>("ProviderKey")
-                        .HasMaxLength(128);
+                    b.Property<string>("ProviderKey");
 
                     b.Property<string>("ProviderDisplayName");
 
@@ -335,11 +335,9 @@ namespace BoekenApplicatie.Data.Migrations
                 {
                     b.Property<Guid>("UserId");
 
-                    b.Property<string>("LoginProvider")
-                        .HasMaxLength(128);
+                    b.Property<string>("LoginProvider");
 
-                    b.Property<string>("Name")
-                        .HasMaxLength(128);
+                    b.Property<string>("Name");
 
                     b.Property<string>("Value");
 

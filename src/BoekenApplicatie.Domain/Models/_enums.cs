@@ -6,15 +6,13 @@ namespace BoekenApplicatie.Domain.Models
 {
   public enum Category
   {
-    Cyberpunk,
-    Detective,
-    Fantasy,
-    Horror,
-    Prehistorische_Roman,
-    Science_Fiction,
-    Space_Opera,
-    Sword_and_Sorcery,
-    Thriller,
+    Filmboek,
+    Fantasy_Role_Playing,
+    Literatuurgeschiedenis,
+    Novelle,
+    Quizboek,
+    Roman,
+    Strip_Roman,
     Verhalenbundel,
     Verhalen_Diverse_Auteurs
   }
@@ -35,5 +33,18 @@ namespace BoekenApplicatie.Domain.Models
     Spaans,
     TsjechoSlowaaks,
     Zweeds
+  }
+
+  public enum Genre
+  {
+    Cyberpunk,
+    Detective,
+    Fantasy,
+    Horror,
+    Prehistorische_Roman,
+    Science_Fiction,
+    Space_Opera,
+    Sword_and_Sorcery,
+    Thriller
   }
 }
