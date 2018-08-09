@@ -41,7 +41,8 @@ namespace BoekenApplicatie.Web
       });
 
       services.AddDbContext<LibraryContext>(options =>
-        options.UseSqlServer(Configuration.GetConnectionString("DefaultConnection")));
+        options.UseLazyLoadingProxies()
+          .UseSqlServer(Configuration.GetConnectionString("DefaultConnection")));
 
       services.AddIdentity<ApplicationUser, IdentityRole<Guid>>(options =>
         {
@@ -98,13 +99,13 @@ namespace BoekenApplicatie.Web
         app.UseExceptionHandler("/Home/Error");
         app.UseHsts();
       }
-      
+
       app.UseHttpsRedirection();
       app.UseStaticFiles();
       app.UseCookiePolicy();
 
       app.UseAuthentication();
-      
+
       app.UseMvc(routes =>
       {
         routes.MapRoute(

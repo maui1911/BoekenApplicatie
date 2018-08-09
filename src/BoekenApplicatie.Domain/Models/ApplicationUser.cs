@@ -8,12 +8,6 @@ namespace BoekenApplicatie.Domain.Models
 {
   public class ApplicationUser : IdentityUser<Guid>, IModel
   {
-    public ApplicationUser()
-    {
-      Ratings = new HashSet<Rating>();
-      Lendings = new HashSet<Lending>();
-    }
-
     public override Guid Id { get; set; }
     [DisplayName("Achternaam")] public string LastName { get; set; }
     [DisplayName("Voornaam")] public string FirstName { get; set; }
@@ -22,8 +16,8 @@ namespace BoekenApplicatie.Domain.Models
     [DisplayName("Postcode")] public string ZipCode { get; set; }
     [DisplayName("Plaats")] public string Residence { get; set; }
 
-    public ICollection<Rating> Ratings { get; set; }
-    public ICollection<Lending> Lendings { get; set; }
+    public virtual ICollection<Rating> Ratings { get; set; }
+    public virtual ICollection<Lending> Lendings { get; set; }
 
     [DisplayName("Naam")]
     public string Name => string.IsNullOrWhiteSpace(Prefix)

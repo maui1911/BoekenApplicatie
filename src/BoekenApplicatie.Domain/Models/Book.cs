@@ -8,17 +8,10 @@ namespace BoekenApplicatie.Domain.Models
 {
   public class Book : IModel
   {
-    public Book()
-    {
-      Titles = new HashSet<Title>();
-      Ratings = new HashSet<Rating>();
-      Lendings = new HashSet<Lending>();
-      Language = Language.Nederlands;
-
-    }
+ 
     public Guid Id { get; set; }
-    public ICollection<Title> Titles { get; set; }
-    public Publisher Publisher { get; set; }
+    public virtual ICollection<Title> Titles { get; set; }
+    public virtual Publisher Publisher { get; set; }
     public string Isbn { get; set; }
     public string SerialNumber { get; set; }
     public int ReleasedYear { get; set; }
@@ -26,12 +19,12 @@ namespace BoekenApplicatie.Domain.Models
     [DataType(DataType.Currency)]
     public decimal Price { get; set; }
     public Language Language { get; set; }
-    public Artist Artist { get; set; }
+    public virtual Artist Artist { get; set; }
     public int YearBought { get; set; }
     [DataType(DataType.Currency)]
     public decimal PriceBought { get; set; }
     public string PriceReason { get; set; }
-    public ICollection<Rating> Ratings { get; set; }
-    public ICollection<Lending> Lendings { get; set; }
+    public virtual ICollection<Rating> Ratings { get; set; }
+    public virtual ICollection<Lending> Lendings { get; set; }
   }
 }

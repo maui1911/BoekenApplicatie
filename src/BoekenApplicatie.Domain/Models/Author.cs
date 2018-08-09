@@ -6,11 +6,7 @@ namespace BoekenApplicatie.Domain.Models
 {
   public class Author : Person, IModel
   {
-    public Author()
-    {
-      Titles = new HashSet<Title>();
-    }
-    
-    public ICollection<Title> Titles { get; set; }
+
+    public virtual ICollection<Title> Titles { get; set; }
   }
 }

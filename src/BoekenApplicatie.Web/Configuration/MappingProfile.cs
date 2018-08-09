@@ -14,6 +14,10 @@ namespace BoekenApplicatie.Web.Configuration
     {
       CreateMap<ApplicationUser, UserEditViewModel>();
       CreateMap<UserEditViewModel, ApplicationUser>();
+      CreateMap<BooksViewModel, Book>();
+      CreateMap<BooksViewModel, Title>();
+      CreateMap<Book, BooksViewModel>();
+      CreateMap<Title, BooksViewModel>();
     }
   }
 }

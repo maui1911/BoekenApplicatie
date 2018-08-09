@@ -6,10 +6,6 @@ namespace BoekenApplicatie.Domain.Models
 {
   public class Artist : Person, IModel
   {
-    public Artist()
-    {
-      Books = new HashSet<Book>();
-    }
-    public ICollection<Book> Books { get; set; }
+    public virtual ICollection<Book> Books { get; set; }
   }
 }
