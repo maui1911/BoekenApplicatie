@@ -7,6 +7,8 @@ using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
 using BoekenApplicatie.Data.Context;
 using BoekenApplicatie.Domain.Models;
+using BoekenApplicatie.Web.Options;
+using BoekenApplicatie.Web.ViewModels;
 using Microsoft.AspNetCore.Authorization;
 
 namespace BoekenApplicatie.Web.Controllers
@@ -21,9 +23,22 @@ namespace BoekenApplicatie.Web.Controllers
     }
 
     // GET: Artists
-    public async Task<IActionResult> Index()
+    public async Task<IActionResult> Index(int page = 1)
     {
-      return View(await _context.Artists.ToListAsync());
+      var skip = (page - 1) * PagingOptions.PageSize;
+      var take = PagingOptions.PageSize;
+
+      var resultTask = _context.Artists.Skip(skip).Take(take).ToListAsync();
+      var countTask = _context.Artists.CountAsync();
+
+      var artists = await resultTask;
+      var count = await countTask;
+
+      var viewModel = new ArtistListViewModel() { Artists = artists };
+
+      ControllerUtil.SetPagingModel(viewModel.Paging, page, count, PagingOptions.PageSize);
+
+      return View(viewModel);
     }
 
     // GET: Artists/Details/5

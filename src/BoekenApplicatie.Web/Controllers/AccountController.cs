@@ -8,6 +8,7 @@ using BoekenApplicatie.Data.Context;
 using BoekenApplicatie.Domain.Models;
 using BoekenApplicatie.Web.Areas.Identity.Pages.Account;
 using BoekenApplicatie.Web.Extensions;
+using BoekenApplicatie.Web.Options;
 using BoekenApplicatie.Web.Services;
 using BoekenApplicatie.Web.ViewModels;
 using Microsoft.AspNetCore.Authentication;
@@ -27,25 +28,36 @@ namespace BoekenApplicatie.Web.Controllers
     private readonly SignInManager<ApplicationUser> _signInManager;
     private readonly UserManager<ApplicationUser> _userManager;
     private readonly RoleManager<IdentityRole<Guid>> _roleManager;
-    private readonly LibraryContext _context;
     private readonly IMapper _mapper;
     private readonly IMailservice _mailservice;
     
     public AccountController(SignInManager<ApplicationUser> signInManager, UserManager<ApplicationUser> userManager,
-      IMapper mapper, LibraryContext context, RoleManager<IdentityRole<Guid>> roleManager, IMailservice mailservice)
+      IMapper mapper, RoleManager<IdentityRole<Guid>> roleManager, IMailservice mailservice)
     {
       _signInManager = signInManager;
       _userManager = userManager;
       _mapper = mapper;
-      _context = context;
       _roleManager = roleManager;
       _mailservice = mailservice;
     }
 
     [Authorize]
-    public async Task<IActionResult> Index()
+    public async Task<IActionResult> Index(int page = 1)
     {
-      return View(await _userManager.Users.ToListAsync());
+      var skip = (page - 1) * PagingOptions.PageSize;
+      var take = PagingOptions.PageSize;
+
+      var resultTask = _userManager.Users.Skip(skip).Take(take).ToListAsync();
+      var countTask = _userManager.Users.CountAsync();
+
+      var users = await resultTask;
+      var count = await countTask;
+
+      var viewModel = new UserListViewModel() { ApplicationUsers = users };
+
+      ControllerUtil.SetPagingModel(viewModel.Paging, page, count, PagingOptions.PageSize);
+
+      return View(viewModel);
     }
 
     [Authorize]

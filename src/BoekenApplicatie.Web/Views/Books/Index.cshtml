@@ -1,4 +1,4 @@
-﻿@model IEnumerable<BooksViewModel>
+﻿@model BookListViewModel
 
 @{
     ViewData["Title"] = "Boeken";
@@ -13,37 +13,37 @@
     <thead>
       <tr>
         <th>
-          @Html.DisplayNameFor(model => model.TitleName)
+          @Html.DisplayNameFor(model => model.BooksViewModels[0].TitleName)
         </th>
         <th>
-          @Html.DisplayNameFor(model => model.SeriesName)
+          @Html.DisplayNameFor(model => model.BooksViewModels[0].SeriesName)
         </th>
         <th>
-          @Html.DisplayNameFor(model => model.Author.Name)
+          @Html.DisplayNameFor(model => model.BooksViewModels[0].Author.Name)
         </th>
         <th>
-          @Html.DisplayNameFor(model => model.Language)
+          @Html.DisplayNameFor(model => model.BooksViewModels[0].Language)
         </th>
         <th>
-          @Html.DisplayNameFor(model => model.Publisher)
+          @Html.DisplayNameFor(model => model.BooksViewModels[0].Publisher.Name)
         </th>
         <th>
-          @Html.DisplayNameFor(model => model.SerialNumber)
+          @Html.DisplayNameFor(model => model.BooksViewModels[0].SerialNumber)
         </th>
         <th>
-          @Html.DisplayNameFor(model => model.Isbn)
+          @Html.DisplayNameFor(model => model.BooksViewModels[0].Isbn)
         </th>
         <th>
-          @Html.DisplayNameFor(model => model.ReleasedYear)
+          @Html.DisplayNameFor(model => model.BooksViewModels[0].ReleasedYear)
         </th>
         <th>
-          @Html.DisplayNameFor(model => model.Price)
+          @Html.DisplayNameFor(model => model.BooksViewModels[0].Price)
         </th>
         <th></th>
       </tr>
     </thead>
     <tbody>
-  @foreach (var item in Model) {
+  @foreach (var item in Model.BooksViewModels) {
       <tr>
         <td>
           @Html.DisplayFor(modelItem => item.TitleName)
@@ -58,7 +58,7 @@
           @Html.DisplayFor(modelItem => item.Language)
         </td>
         <td>
-          @Html.DisplayFor(modelItem => item.Publisher)
+          @Html.DisplayFor(modelItem => item.Publisher.Name)
         </td>
         <td>
           @Html.DisplayFor(modelItem => item.SerialNumber)
@@ -81,3 +81,6 @@
 }
     </tbody>
 </table>
+<nav aria-label="navigation">
+  <partial name="_Pager", model="Model.Paging" />
+</nav>

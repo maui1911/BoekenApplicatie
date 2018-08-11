@@ -7,154 +7,174 @@ using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
 using BoekenApplicatie.Data.Context;
 using BoekenApplicatie.Domain.Models;
+using BoekenApplicatie.Web.Options;
+using BoekenApplicatie.Web.ViewModels;
 using Microsoft.AspNetCore.Authorization;
 
 namespace BoekenApplicatie.Web.Controllers
 {
+  public class AuthorsController : Controller
+  {
+    private readonly LibraryContext _context;
 
-    public class AuthorsController : Controller
+    public AuthorsController(LibraryContext context)
     {
-        private readonly LibraryContext _context;
+      _context = context;
+    }
 
-        public AuthorsController(LibraryContext context)
-        {
-            _context = context;
-        }
+    // GET: Authors
+    public async Task<IActionResult> Index(int page = 1)
+    {
+      var skip = (page - 1) * PagingOptions.PageSize;
+      var take = PagingOptions.PageSize;
 
-        // GET: Authors
-        public async Task<IActionResult> Index()
-        {
-            return View(await _context.Authors.ToListAsync());
-        }
+      var resultTask = _context.Authors.Skip(skip).Take(take).ToListAsync();
+      var countTask = _context.Authors.CountAsync();
 
-        // GET: Authors/Details/5
-        public async Task<IActionResult> Details(Guid? id)
-        {
-            if (id == null)
-            {
-                return NotFound();
-            }
+      var authors = await resultTask;
+      var count = await countTask;
 
-            var author = await _context.Authors
-                .FirstOrDefaultAsync(m => m.Id == id);
-            if (author == null)
-            {
-                return NotFound();
-            }
+      var viewModel = new AuthorListViewModel() {Authors = authors};
 
-            return View(author);
-        }
-      [Authorize(Roles = "Admin")]
+      ControllerUtil.SetPagingModel(viewModel.Paging, page, count, PagingOptions.PageSize);
+
+      return View(viewModel);
+    }
+
+    // GET: Authors/Details/5
+    public async Task<IActionResult> Details(Guid? id)
+    {
+      if (id == null)
+      {
+        return NotFound();
+      }
+
+      var author = await _context.Authors
+        .FirstOrDefaultAsync(m => m.Id == id);
+      if (author == null)
+      {
+        return NotFound();
+      }
+
+      return View(author);
+    }
+
+    [Authorize(Roles = "Admin")]
     // GET: Authors/Create
     public IActionResult Create()
-        {
-            return View();
-        }
+    {
+      return View();
+    }
 
     // POST: Authors/Create
     // To protect from overposting attacks, please enable the specific properties you want to bind to, for 
     // more details see http://go.microsoft.com/fwlink/?LinkId=317598.
     [Authorize(Roles = "Admin")]
     [HttpPost]
-        [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Create([Bind("Id,LastName,FirstName,Prefix")] Author author)
-        {
-            if (ModelState.IsValid)
-            {
-                author.Id = Guid.NewGuid();
-                _context.Add(author);
-                await _context.SaveChangesAsync();
-                return RedirectToAction(nameof(Index));
-            }
-            return View(author);
-        }
+    [ValidateAntiForgeryToken]
+    public async Task<IActionResult> Create([Bind("Id,LastName,FirstName,Prefix")] Author author)
+    {
+      if (ModelState.IsValid)
+      {
+        author.Id = Guid.NewGuid();
+        _context.Add(author);
+        await _context.SaveChangesAsync();
+        return RedirectToAction(nameof(Index));
+      }
+
+      return View(author);
+    }
 
     // GET: Authors/Edit/5
-      [Authorize(Roles = "Admin")]
+    [Authorize(Roles = "Admin")]
     public async Task<IActionResult> Edit(Guid? id)
-        {
-            if (id == null)
-            {
-                return NotFound();
-            }
+    {
+      if (id == null)
+      {
+        return NotFound();
+      }
 
-            var author = await _context.Authors.FindAsync(id);
-            if (author == null)
-            {
-                return NotFound();
-            }
-            return View(author);
-        }
+      var author = await _context.Authors.FindAsync(id);
+      if (author == null)
+      {
+        return NotFound();
+      }
+
+      return View(author);
+    }
 
     // POST: Authors/Edit/5
     // To protect from overposting attacks, please enable the specific properties you want to bind to, for 
     // more details see http://go.microsoft.com/fwlink/?LinkId=317598.
     [Authorize(Roles = "Admin")]
     [HttpPost]
-        [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Edit(Guid id, [Bind("Id,LastName,FirstName,Prefix")] Author author)
-        {
-            if (id != author.Id)
-            {
-                return NotFound();
-            }
+    [ValidateAntiForgeryToken]
+    public async Task<IActionResult> Edit(Guid id, [Bind("Id,LastName,FirstName,Prefix")] Author author)
+    {
+      if (id != author.Id)
+      {
+        return NotFound();
+      }
 
-            if (ModelState.IsValid)
-            {
-                try
-                {
-                    _context.Update(author);
-                    await _context.SaveChangesAsync();
-                }
-                catch (DbUpdateConcurrencyException)
-                {
-                    if (!AuthorExists(author.Id))
-                    {
-                        return NotFound();
-                    }
-                    else
-                    {
-                        throw;
-                    }
-                }
-                return RedirectToAction(nameof(Index));
-            }
-            return View(author);
+      if (ModelState.IsValid)
+      {
+        try
+        {
+          _context.Update(author);
+          await _context.SaveChangesAsync();
         }
-      [Authorize(Roles = "Admin")]
+        catch (DbUpdateConcurrencyException)
+        {
+          if (!AuthorExists(author.Id))
+          {
+            return NotFound();
+          }
+          else
+          {
+            throw;
+          }
+        }
+
+        return RedirectToAction(nameof(Index));
+      }
+
+      return View(author);
+    }
+
+    [Authorize(Roles = "Admin")]
     // GET: Authors/Delete/5
     public async Task<IActionResult> Delete(Guid? id)
-        {
-            if (id == null)
-            {
-                return NotFound();
-            }
+    {
+      if (id == null)
+      {
+        return NotFound();
+      }
 
-            var author = await _context.Authors
-                .FirstOrDefaultAsync(m => m.Id == id);
-            if (author == null)
-            {
-                return NotFound();
-            }
+      var author = await _context.Authors
+        .FirstOrDefaultAsync(m => m.Id == id);
+      if (author == null)
+      {
+        return NotFound();
+      }
 
-            return View(author);
-        }
+      return View(author);
+    }
 
     // POST: Authors/Delete/5
-      [Authorize(Roles = "Admin")]
+    [Authorize(Roles = "Admin")]
     [HttpPost, ActionName("Delete")]
-        [ValidateAntiForgeryToken]
-        public async Task<IActionResult> DeleteConfirmed(Guid id)
-        {
-            var author = await _context.Authors.FindAsync(id);
-            _context.Authors.Remove(author);
-            await _context.SaveChangesAsync();
-            return RedirectToAction(nameof(Index));
-        }
-
-        private bool AuthorExists(Guid id)
-        {
-            return _context.Authors.Any(e => e.Id == id);
-        }
+    [ValidateAntiForgeryToken]
+    public async Task<IActionResult> DeleteConfirmed(Guid id)
+    {
+      var author = await _context.Authors.FindAsync(id);
+      _context.Authors.Remove(author);
+      await _context.SaveChangesAsync();
+      return RedirectToAction(nameof(Index));
     }
+
+    private bool AuthorExists(Guid id)
+    {
+      return _context.Authors.Any(e => e.Id == id);
+    }
+  }
 }

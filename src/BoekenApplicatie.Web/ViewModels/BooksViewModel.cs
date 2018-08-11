@@ -4,6 +4,7 @@ using System.ComponentModel;
 using System.Linq;
 using System.Threading.Tasks;
 using BoekenApplicatie.Domain.Models;
+
 using Microsoft.AspNetCore.Mvc.Rendering;
 
 namespace BoekenApplicatie.Web.ViewModels
@@ -56,6 +57,5 @@ namespace BoekenApplicatie.Web.ViewModels
     public List<SelectListItem> Translators { get; set; } = new List<SelectListItem>();
     public ICollection<Rating> Ratings { get; set; }
     public ICollection<Lending> Lendings { get; set; }
-    
   }
 }

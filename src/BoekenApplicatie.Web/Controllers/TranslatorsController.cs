@@ -7,7 +7,10 @@ using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
 using BoekenApplicatie.Data.Context;
 using BoekenApplicatie.Domain.Models;
+using BoekenApplicatie.Web.Options;
+using BoekenApplicatie.Web.ViewModels;
 using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Builder;
 
 namespace BoekenApplicatie.Web.Controllers
 {
@@ -21,9 +24,22 @@ namespace BoekenApplicatie.Web.Controllers
         }
 
         // GET: Translators
-        public async Task<IActionResult> Index()
+        public async Task<IActionResult> Index(int page = 1)
         {
-            return View(await _context.Translators.ToListAsync());
+          var skip = (page - 1) * PagingOptions.PageSize;
+          var take = PagingOptions.PageSize;
+
+          var translatorsTask = _context.Translators.Skip(skip).Take(take).ToListAsync();
+          var countTask = _context.Translators.CountAsync();
+
+          List<Translator> translators = await translatorsTask;
+          var count = await countTask;
+
+          TranslatorListViewModel transListViewModel = new TranslatorListViewModel {Translators = translators};
+
+          ControllerUtil.SetPagingModel(transListViewModel.Paging, page, count, PagingOptions.PageSize);
+
+          return View(transListViewModel);
         }
 
         // GET: Translators/Details/5

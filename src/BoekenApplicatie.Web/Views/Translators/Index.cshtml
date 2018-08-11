@@ -1,4 +1,4 @@
-﻿@model IEnumerable<BoekenApplicatie.Domain.Models.Translator>
+﻿@model TranslatorListViewModel
 
 @{
     ViewData["Title"] = "Index";
@@ -14,19 +14,19 @@
       <tr>
 
         <th>
-          @Html.DisplayNameFor(model => model.FirstName)
+          @Html.DisplayNameFor(model => model.Translators[0].FirstName)
         </th>
         <th>
-          @Html.DisplayNameFor(model => model.Prefix)
+          @Html.DisplayNameFor(model => model.Translators[0].Prefix)
         </th>
         <th>
-          @Html.DisplayNameFor(model => model.LastName)
+          @Html.DisplayNameFor(model => model.Translators[0].LastName)
         </th>
         <th></th>
       </tr>
     </thead>
     <tbody>
-@foreach (var item in Model) {
+@foreach (var item in Model.Translators) {
       <tr>
 
         <td>
@@ -47,3 +47,6 @@
 }
     </tbody>
 </table>
+<nav aria-label="navigation">
+  <partial name="_Pager" , model="Model.Paging" />
+</nav>

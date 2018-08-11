@@ -1,4 +1,4 @@
-﻿@model IEnumerable<BoekenApplicatie.Domain.Models.Publisher>
+﻿@model PublisherListViewModel
 
 @{
     ViewData["Title"] = "Index";
@@ -14,13 +14,13 @@
     <thead>
         <tr>
             <th>
-                @Html.DisplayNameFor(model => model.Name)
+                @Html.DisplayNameFor(model => model.Publishers[0].Name)
             </th>
             <th></th>
         </tr>
     </thead>
     <tbody>
-@foreach (var item in Model) {
+@foreach (var item in Model.Publishers) {
         <tr>
             <td>
                 @Html.DisplayFor(modelItem => item.Name)
@@ -34,3 +34,6 @@
 }
     </tbody>
 </table>
+<nav aria-label="navigation">
+  <partial name="_Pager" , model="Model.Paging" />
+</nav>

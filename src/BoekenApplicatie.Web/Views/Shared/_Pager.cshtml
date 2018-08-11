@@ -1,0 +1,40 @@
+﻿@using BoekenApplicatie.Web.Options
+@model BaseListViewModel.PagingModel
+@*
+  For more information on enabling MVC for empty projects, visit http://go.microsoft.com/fwlink/?LinkID=397860
+*@
+
+@if(Model.TotalPages > 1)
+{
+  var half = (int)((PagingOptions.MaxPages - 0.5) / 2);
+  var start = Math.Max(1, Model.CurrentPage - half);
+  if(start + PagingOptions.MaxPages - 1 > Model.TotalPages)
+  {
+    start = Model.TotalPages - PagingOptions.MaxPages + 1;
+  }
+  var startx = Math.Max(1, start);
+  var stop = Math.Min(Model.TotalPages, startx + PagingOptions.MaxPages - 1);
+
+
+  <div>
+    <ul class="pagination">
+
+      <li class="page-item @(Model.CurrentPage == Model.FirstPage ? "disabled" : "")">
+        <a asp-route-page="@Model.PrevPage" class="page-link" aria-label="Previous">&laquo;</a>
+      </li>
+
+      @for(int i = startx; i <= stop; i++)
+      {
+        <li class="page-item @(Model.CurrentPage== i ? "active": "")">
+          <a asp-route-page="@i" class="page-link">@i</a>
+        </li>
+      }
+
+      <li class="page-item @(Model.CurrentPage == Model.LastPage ? "disabled" : "")">
+        <a asp-route-page="@Model.NextPage" aria-label="Next" class="page-link">&raquo;</a>
+      </li>
+
+
+    </ul>
+  </div>
+}

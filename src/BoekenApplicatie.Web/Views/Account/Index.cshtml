@@ -1,5 +1,4 @@
-﻿@using BoekenApplicatie.Domain.Models
-@model IEnumerable<ApplicationUser>
+﻿@model UserListViewModel
 
 @{
   ViewData["Title"] = "Index";
@@ -15,34 +14,37 @@
 
   <table class="table">
     <thead>
-      <tr>
-        <th>
-          @Html.DisplayNameFor(model => model.UserName)
-        </th>
-        <th>
-          @Html.DisplayNameFor(model => model.Name)
-        </th>
-        <th></th>
-      </tr>
+    <tr>
+      <th>
+        @Html.DisplayNameFor(model => model.ApplicationUsers[0].UserName)
+      </th>
+      <th>
+        @Html.DisplayNameFor(model => model.ApplicationUsers[0].Name)
+      </th>
+      <th></th>
+    </tr>
     </thead>
     <tbody>
 
-      @foreach (var item in Model)
-      {
-        <tr>
-          <td>
-            @Html.DisplayFor(modelItem => item.UserName)
-          </td>
-          <td>
-            @Html.DisplayFor(modelItem => item.Name)
-          </td>
-          <td>
-            <a asp-action="Edit" asp-route-id="@item.Id">Edit</a> |
-            <a asp-action="Details" asp-route-id="@item.Id">Details</a> |
-            <a asp-action="Delete" asp-route-id="@item.Id">Delete</a>
-          </td>
-        </tr>
-      }
+    @foreach (var item in Model.ApplicationUsers)
+    {
+      <tr>
+        <td>
+          @Html.DisplayFor(modelItem => item.UserName)
+        </td>
+        <td>
+          @Html.DisplayFor(modelItem => item.Name)
+        </td>
+        <td>
+          <a asp-action="Edit" asp-route-id="@item.Id">Edit</a> |
+          <a asp-action="Details" asp-route-id="@item.Id">Details</a> |
+          <a asp-action="Delete" asp-route-id="@item.Id">Delete</a>
+        </td>
+      </tr>
+    }
     </tbody>
   </table>
+  <nav aria-label="navigation">
+    <partial name="_Pager" , model="Model.Paging" />
+  </nav>
 }

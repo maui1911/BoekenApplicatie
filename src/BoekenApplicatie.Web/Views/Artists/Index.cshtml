@@ -1,4 +1,4 @@
-﻿@model IEnumerable<BoekenApplicatie.Domain.Models.Artist>
+﻿@model ArtistListViewModel
 
 @{
     ViewData["Title"] = "Index";
@@ -13,19 +13,19 @@
     <thead>
       <tr>
         <th>
-          @Html.DisplayNameFor(model => model.FirstName)
+          @Html.DisplayNameFor(model => model.Artists[0].FirstName)
         </th>
         <th>
-          @Html.DisplayNameFor(model => model.Prefix)
+          @Html.DisplayNameFor(model => model.Artists[0].Prefix)
         </th>
         <th>
-          @Html.DisplayNameFor(model => model.LastName)
+          @Html.DisplayNameFor(model => model.Artists[0].LastName)
         </th>
         <th></th>
       </tr>
     </thead>
     <tbody>
-@foreach (var item in Model) {
+@foreach (var item in Model.Artists) {
         <tr>
             <td>
                 @Html.DisplayFor(modelItem => item.FirstName)
@@ -45,3 +45,6 @@
 }
     </tbody>
 </table>
+<nav aria-label="navigation">
+  <partial name="_Pager" , model="Model.Paging" />
+</nav>

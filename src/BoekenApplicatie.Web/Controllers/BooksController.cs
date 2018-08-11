@@ -1,14 +1,15 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using AutoMapper;
-using BoekenApplicatie.Web.ViewModels;
+using BoekenApplicatie.Data.Context;
 using BoekenApplicatie.Domain.Models;
+using BoekenApplicatie.Web.Options;
+using BoekenApplicatie.Web.ViewModels;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
-using BoekenApplicatie.Data.Context;
-using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
 
 namespace BoekenApplicatie.Web.Controllers
@@ -17,25 +18,37 @@ namespace BoekenApplicatie.Web.Controllers
   {
     private readonly LibraryContext _context;
     private readonly IMapper _mapper;
+
     public BooksController(LibraryContext context, IMapper mapper)
     {
       _context = context;
       _mapper = mapper;
     }
+
     // GET: Books
-    public async Task<ActionResult> Index()
+    public async Task<ActionResult> Index(int page = 1)
     {
-      var titles = await _context.Titles.ToListAsync();
-      
-      List<BooksViewModel> booksViewModels = new List<BooksViewModel>();
-      booksViewModels.AddRange(titles.Select(CreateBookViewModelForIndex));
-      
-      return View(booksViewModels);
+      var skip = (page - 1) * PagingOptions.PageSize;
+      var take = PagingOptions.PageSize;
+
+      var titlesTask = _context.Titles.Skip(skip).Take(take).ToListAsync();
+      var countTask = _context.Titles.CountAsync();
+
+      var titles = await titlesTask;
+      var count = await countTask;
+
+      BookListViewModel booksListViewModel = new BookListViewModel();
+      booksListViewModel.BooksViewModels.AddRange(titles.Select(CreateBookViewModelForIndex));
+
+      ControllerUtil.SetPagingModel(booksListViewModel.Paging, page, count, PagingOptions.PageSize);
+
+      return View(booksListViewModel);
     }
+
 
     private BooksViewModel CreateBookViewModelForIndex(Title title)
     {
-      var bookViewModel = _mapper.Map<Title,BooksViewModel>(title);
+      var bookViewModel = _mapper.Map<Title, BooksViewModel>(title);
       _mapper.Map(title.Book, bookViewModel);
       bookViewModel.TitleId = title.Id;
       return bookViewModel;
@@ -46,6 +59,7 @@ namespace BoekenApplicatie.Web.Controllers
     {
       return View();
     }
+
     [Authorize(Roles = "Admin")]
     // GET: Books/Create
     public async Task<ActionResult> Create()
@@ -63,10 +77,14 @@ namespace BoekenApplicatie.Web.Controllers
       var translators = await _context.Translators.ToListAsync();
       var artists = await _context.Artists.ToListAsync();
 
-      booksViewModel.Authors.AddRange(authors.Select(author => new Microsoft.AspNetCore.Mvc.Rendering.SelectListItem { Value = author.Id.ToString(), Text = author.Name }));
-      booksViewModel.Publishers.AddRange(publishers.Select(publisher => new Microsoft.AspNetCore.Mvc.Rendering.SelectListItem { Value = publisher.Id.ToString(), Text = publisher.Name }));
-      booksViewModel.Translators.AddRange(translators.Select(translator => new Microsoft.AspNetCore.Mvc.Rendering.SelectListItem { Value = translator.Id.ToString(), Text = translator.Name }));
-      booksViewModel.Artists.AddRange(artists.Select(artist => new Microsoft.AspNetCore.Mvc.Rendering.SelectListItem { Value = artist.Id.ToString(), Text = artist.Name }));
+      booksViewModel.Authors.AddRange(authors.Select(author =>
+        new SelectListItem {Value = author.Id.ToString(), Text = author.Name}));
+      booksViewModel.Publishers.AddRange(publishers.Select(publisher =>
+        new SelectListItem {Value = publisher.Id.ToString(), Text = publisher.Name}));
+      booksViewModel.Translators.AddRange(translators.Select(translator =>
+        new SelectListItem {Value = translator.Id.ToString(), Text = translator.Name}));
+      booksViewModel.Artists.AddRange(artists.Select(artist =>
+        new SelectListItem {Value = artist.Id.ToString(), Text = artist.Name}));
     }
 
     // POST: Books/Create
@@ -76,7 +94,7 @@ namespace BoekenApplicatie.Web.Controllers
     public async Task<ActionResult> Create(BooksViewModel viewModel)
     {
       if (!ModelState.IsValid) return View(viewModel);
-      
+
       var title = _mapper.Map<BooksViewModel, Title>(viewModel);
       title.Id = Guid.NewGuid();
       title.Author = await _context.Authors.FindAsync(Guid.Parse(viewModel.AuthorId));
@@ -89,7 +107,7 @@ namespace BoekenApplicatie.Web.Controllers
       book.Artist = await _context.Artists.FindAsync(Guid.Parse(viewModel.ArtistId));
       book.Titles.Add(title);
 
-      _context.Add(book);
+      _context.Add((object) book);
       await _context.SaveChangesAsync();
       return RedirectToAction(nameof(Index));
     }
@@ -98,19 +116,19 @@ namespace BoekenApplicatie.Web.Controllers
     [Authorize(Roles = "Admin")]
     public async Task<ActionResult> Edit(Guid? id)
     {
-      if(id == null)
+      if (id == null)
       {
         return NotFound();
       }
 
       var title = await _context.Titles.FindAsync(id);
-      if(title == null)
+      if (title == null)
       {
         return NotFound();
       }
 
-      var booksViewModel = _mapper.Map<Title,BooksViewModel> (title);
-      _mapper.Map<Book, BooksViewModel>(title.Book, booksViewModel);
+      var booksViewModel = _mapper.Map<Title, BooksViewModel>(title);
+      _mapper.Map(title.Book, booksViewModel);
       booksViewModel.TitleId = title.Id;
       await GetDropdownData(booksViewModel);
 
