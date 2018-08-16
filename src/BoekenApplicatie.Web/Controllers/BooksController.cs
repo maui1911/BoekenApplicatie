@@ -7,7 +7,6 @@ using BoekenApplicatie.Domain.Models;
 using BoekenApplicatie.Web.Options;
 using BoekenApplicatie.Web.ViewModels;
 using Microsoft.AspNetCore.Authorization;
-using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
@@ -26,7 +25,7 @@ namespace BoekenApplicatie.Web.Controllers
     }
 
     // GET: Books
-    public async Task<ActionResult> Index(int page = 1)
+    public async Task<ActionResult> Index(int page = 1, string title = "", string seriesName = "", string authorName ="", string publisherName = "")
     {
       var skip = (page - 1) * PagingOptions.PageSize;
       var take = PagingOptions.PageSize;
@@ -55,9 +54,24 @@ namespace BoekenApplicatie.Web.Controllers
     }
 
     // GET: Books/Details/5
-    public ActionResult Details(int id)
+    public async Task<ActionResult> Details(Guid? id)
     {
-      return View();
+      if(id == null)
+      {
+        return NotFound();
+      }
+
+      var title = await _context.Titles.FindAsync(id);
+      if(title == null)
+      {
+        return NotFound();
+      }
+
+      var booksViewModel = _mapper.Map<Title, BooksViewModel>(title);
+      _mapper.Map(title.Book, booksViewModel);
+      booksViewModel.TitleId = title.Id;
+
+      return View(booksViewModel);
     }
 
     [Authorize(Roles = "Admin")]
@@ -164,21 +178,46 @@ namespace BoekenApplicatie.Web.Controllers
 
     // GET: Books/Delete/5
     [Authorize(Roles = "Admin")]
-    public ActionResult Delete(int id)
+    public async Task<ActionResult> Delete(Guid? id)
     {
-      return View();
+      if(id == null)
+      {
+        return NotFound();
+      }
+
+      var title = await _context.Titles.FindAsync(id);
+      if(title == null)
+      {
+        return NotFound();
+      }
+
+      var booksViewModel = _mapper.Map<Title, BooksViewModel>(title);
+      _mapper.Map(title.Book, booksViewModel);
+      booksViewModel.TitleId = title.Id;
+
+      return View(booksViewModel);
     }
 
     // POST: Books/Delete/5
     [Authorize(Roles = "Admin")]
-    [HttpPost]
+    [HttpPost, ActionName("Delete")]
     [ValidateAntiForgeryToken]
-    public ActionResult Delete(int id, IFormCollection collection)
+    public async Task<ActionResult> DeleteConfirmed(Guid? id)
     {
       try
       {
-        // TODO: Add delete logic here
+        var title = await _context.Titles.FindAsync(id);
+        _context.Titles.Remove(title);
 
+        var bookId = title.Book.Id;
+        var book = await _context.Books.FindAsync(bookId);
+
+        if (book.Titles.Count <= 1)
+        {
+          _context.Books.Remove(book);
+        }
+
+        await _context.SaveChangesAsync();
         return RedirectToAction(nameof(Index));
       }
       catch

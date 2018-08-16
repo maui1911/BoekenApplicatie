@@ -1,0 +1,107 @@
+﻿@model BooksViewModel
+
+@{
+  ViewData["Title"] = "Details";
+  Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+<h2>Details</h2>
+  <h4 class="blockquote">@Html.DisplayFor(model => model.TitleName)</h4>
+
+<hr/>
+
+<div class="container">
+  <div class="row">
+    <div class="col-sm" align="right">
+      <strong>
+        @Html.DisplayNameFor(model => model.TitleName) <br />
+        @Html.DisplayNameFor(model => model.SeriesName) <br />
+        @Html.DisplayNameFor(model => model.Author)<br />
+        <br />
+        @Html.DisplayNameFor(model => model.Language) <br />
+        @Html.DisplayNameFor(model => model.Publisher) <br />
+        @Html.DisplayNameFor(model => model.Isbn) <br />
+        @Html.DisplayNameFor(model => model.Edition) <br />
+        <br />
+        @Html.DisplayNameFor(model => model.Category) <br />
+        @Html.DisplayNameFor(model => model.Genre) <br />
+        <br />
+        @Html.DisplayNameFor(model => model.OriginalTitle) <br />
+        @Html.DisplayNameFor(model => model.OriginalLangage) <br />
+        @Html.DisplayNameFor(model => model.Translator) <br />
+        @Html.DisplayNameFor(model => model.Artist) <br />
+        <br />
+        @Html.DisplayNameFor(model => model.YearBought) <br />
+        @Html.DisplayNameFor(model => model.PriceReason) <br />
+      </strong>
+    </div>
+    <div class="col-sm">
+      @Html.DisplayFor(model => model.TitleName) <br />
+      @Html.DisplayFor(model => model.SeriesName) <br />
+      @Html.DisplayFor(model => model.Author.Name) <br />
+      <br />
+      @Html.DisplayFor(model => model.Language) <br />
+      @Html.DisplayFor(model => model.Publisher.Name) <br />
+      @Html.DisplayFor(model => model.Isbn) <br />
+      @Html.DisplayFor(model => model.Edition) <br />
+      <br />
+      @Html.DisplayFor(model => model.Category) <br />
+      @Html.DisplayFor(model => model.Genre) <br />
+      <br />
+      @Html.DisplayFor(model => model.OriginalTitle)<br />
+      @Html.DisplayFor(model => model.OriginalLangage)<br />
+      @Html.DisplayFor(model => model.Translator.Name) <br />
+      @Html.DisplayFor(model => model.Artist.Name) <br />
+      <br />
+      @Html.DisplayFor(model => model.YearBought) <br />
+      @Html.DisplayFor(model => model.PriceReason) <br />
+    </div>
+    <div class="col-sm" align="right">
+      <strong>
+        <br />
+        <br />
+        <br />
+        <br />
+        @Html.DisplayNameFor(model => model.ReleasedYear) <br />
+        @Html.DisplayNameFor(model => model.SerialNumber) <br />
+        <br />
+        @Html.DisplayNameFor(model => model.Price) <br />
+        <br />
+        @Html.DisplayNameFor(model => model.Part) <br />
+        <br />
+        <br />
+        @Html.DisplayNameFor(model => model.OriginalReleasedYear) <br />
+        <br />
+        <br />
+        <br />
+        <br />
+        @Html.DisplayNameFor(model => model.PriceBought) <br />
+      </strong>
+    </div>
+    <div class="col-sm">
+      <br />
+      <br />
+      <br />
+      <br />
+      @Html.DisplayFor(model => model.ReleasedYear) <br />
+      @Html.DisplayFor(model => model.SerialNumber) <br />
+      <br />
+      @Html.DisplayFor(model => model.Price) <br />
+      <br />
+      @Html.DisplayFor(model => model.Part) <br />
+      <br />
+      <br />
+      @Html.DisplayFor(model => model.OriginalReleasedYear) <br />
+      <br />
+      <br />
+      <br />
+      <br />
+      @Html.DisplayFor(model => model.PriceBought) <br />
+    </div>
+  </div>
+</div>
+
+<div>
+  @Html.ActionLink("Edit", "Edit", new {id = Model.TitleId}) |
+  <a asp-action="Index">Back to List</a>
+</div>
