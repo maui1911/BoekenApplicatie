@@ -2,8 +2,8 @@
 
 @{
   ViewData["Title"] = "Boeken";
-  Model.SortFilterPageData.FilterByProp = new string[6];
-  Model.SortFilterPageData.FilterValue = new string[6];
+  Model.SortFilterPageData.FilterByProp = new string[5];
+  Model.SortFilterPageData.FilterValue = new string[5];
 }
 
 <h2>Boeken</h2>
@@ -32,8 +32,6 @@
       </th>
       <th>
         @Html.DisplayNameFor(model => model.BooksViewModels[0].Author.Name)
-        <input type="hidden" asp-for="SortFilterPageData.FilterByProp[5]" value="Author.LastName" />
-        <input asp-for="SortFilterPageData.FilterValue[5]" />
       </th>
       <th>
         <a href="#" onclick="sortBy('Language')">@Html.DisplayNameFor(model => model.BooksViewModels[0].Language)</a> <br />
