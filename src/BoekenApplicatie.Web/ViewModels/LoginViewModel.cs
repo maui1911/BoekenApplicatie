@@ -1,9 +1,5 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
-using System.Linq;
-using System.Threading.Tasks;
-using BoekenApplicatie.Web.Areas.Identity.Pages.Account;
 using Microsoft.AspNetCore.Authentication;
 using Microsoft.AspNetCore.Mvc;
 
@@ -11,8 +7,7 @@ namespace BoekenApplicatie.Web.ViewModels
 {
     public class LoginViewModel
     {
-      [BindProperty]
-      public LoginModel.InputModel Input { get; set; }
+      public InputModel Input { get; set; }
 
       public IList<AuthenticationScheme> ExternalLogins { get; set; }
 

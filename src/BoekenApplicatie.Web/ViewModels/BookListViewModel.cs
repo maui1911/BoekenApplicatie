@@ -1,16 +1,13 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
+﻿using System.Collections.Generic;
 
 namespace BoekenApplicatie.Web.ViewModels
 {
-    public class BookListViewModel : BaseListViewModel
+  public class BookListViewModel : BaseListViewModel
+  {
+    public BookListViewModel()
     {
-      public BookListViewModel()
-      {
-        BooksViewModels = new List<BooksViewModel>();
-      }
-      public List<BooksViewModel> BooksViewModels { get; set; }
+      BooksViewModels = new List<BooksViewModel>();
+    }
+    public List<BooksViewModel> BooksViewModels { get; set; }
   }
 }

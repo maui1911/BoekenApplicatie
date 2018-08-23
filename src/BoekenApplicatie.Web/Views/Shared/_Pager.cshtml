@@ -1,37 +1,40 @@
 ﻿@using BoekenApplicatie.Web.Options
-@model BaseListViewModel.PagingModel
+@model SortFilterPageOptions
 @*
   For more information on enabling MVC for empty projects, visit http://go.microsoft.com/fwlink/?LinkID=397860
 *@
 
-@if(Model.TotalPages > 1)
+@if(Model.PagesCount > 1)
 {
-  var half = (int)((PagingOptions.MaxPages - 0.5) / 2);
+  var half = (int)((Model.MaxPages - 0.5) / 2);
   var start = Math.Max(1, Model.CurrentPage - half);
-  if(start + PagingOptions.MaxPages - 1 > Model.TotalPages)
+  if(start + Model.MaxPages - 1 > Model.PagesCount)
   {
-    start = Model.TotalPages - PagingOptions.MaxPages + 1;
+    start = Model.PagesCount - Model.MaxPages + 1;
   }
   var startx = Math.Max(1, start);
-  var stop = Math.Min(Model.TotalPages, startx + PagingOptions.MaxPages - 1);
+  var stop = Math.Min(Model.PagesCount, startx + Model.MaxPages - 1);
 
 
   <div>
     <ul class="pagination">
 
-      <li class="page-item @(Model.CurrentPage == Model.FirstPage ? "disabled" : "")">
-        <a asp-route-page="@Model.PrevPage" class="page-link" aria-label="Previous">&laquo;</a>
+      <li class="page-item @(Model.CurrentPage == 1 ? "disabled" : "")">
+        <a href="#" onclick="changeToPage(@(Model.CurrentPage-1));" class="page-link" aria-label="Previous">&laquo;</a>
+        @*<a asp-route-page="@Model.CurrentPage" class="page-link" aria-label="Previous">&laquo;</a>*@
       </li>
 
       @for(int i = startx; i <= stop; i++)
       {
-        <li class="page-item @(Model.CurrentPage== i ? "active": "")">
-          <a asp-route-page="@i" class="page-link">@i</a>
-        </li>
+      <li class="page-item @(Model.CurrentPage == i ? "active": "")">
+        <a href="#" onclick="changeToPage(@i);" class="page-link">@i</a>
+        @*<a asp-route-page="@i" class="page-link">@i</a>*@
+      </li>
       }
 
-      <li class="page-item @(Model.CurrentPage == Model.LastPage ? "disabled" : "")">
-        <a asp-route-page="@Model.NextPage" aria-label="Next" class="page-link">&raquo;</a>
+      <li class="page-item @(Model.CurrentPage == Model.PagesCount ? "disabled" : "")">
+        <a href="#" onclick="changeToPage(@(Model.CurrentPage+1));" aria-label="Next" class="page-link">&raquo;</a>
+        @*<a asp-route-page="@Model.CurrentPage+1" aria-label="Next" class="page-link">&raquo;</a>*@
       </li>
 
 

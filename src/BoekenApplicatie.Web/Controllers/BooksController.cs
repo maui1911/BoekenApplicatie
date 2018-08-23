@@ -3,8 +3,9 @@ using System.Linq;
 using System.Threading.Tasks;
 using AutoMapper;
 using BoekenApplicatie.Data.Context;
+using BoekenApplicatie.Data.Extensions;
 using BoekenApplicatie.Domain.Models;
-using BoekenApplicatie.Web.Options;
+using BoekenApplicatie.Web.QueryObjects;
 using BoekenApplicatie.Web.ViewModels;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
@@ -25,26 +26,45 @@ namespace BoekenApplicatie.Web.Controllers
     }
 
     // GET: Books
-    public async Task<ActionResult> Index(int page = 1, string title = "", string seriesName = "", string authorName ="", string publisherName = "")
+    //public async Task<ActionResult> Index(int page = 1, string title = "", string seriesName = "", string authorName ="", string publisherName = "")
+    //{
+    //  var skip = (page - 1) * PagingOptions.PageSize;
+    //  var take = PagingOptions.PageSize;
+
+    //  var titlesTask = _context.Titles.Skip(skip).Take(take).ToListAsync();
+    //  var countTask = _context.Titles.CountAsync();
+
+    //  var titles = await titlesTask;
+    //  var count = await countTask;
+
+    //  BookListViewModel booksListViewModel = new BookListViewModel();
+    //  booksListViewModel.BooksViewModels.AddRange(titles.Select(CreateBookViewModelForIndex));
+
+    //  ControllerUtil.SetPagingModel(booksListViewModel.Paging, page, count, PagingOptions.PageSize);
+
+    //  return View(booksListViewModel);
+    //}
+
+    public async Task<ActionResult> Index(BookListViewModel vm)
     {
-      var skip = (page - 1) * PagingOptions.PageSize;
-      var take = PagingOptions.PageSize;
+      ModelState.Remove("SortFilterPageData.PrevStateCheck");
+      var options = vm.SortFilterPageData;
 
-      var titlesTask = _context.Titles.Skip(skip).Take(take).ToListAsync();
-      var countTask = _context.Titles.CountAsync();
+      if(string.IsNullOrWhiteSpace(vm.SortFilterPageData.OrderByProp))
+        options.OrderByProp = "TitleId";
 
-      var titles = await titlesTask;
-      var count = await countTask;
+      var bookQuery = _context.Titles
+        .AsNoTracking()
+        .MapToViewModel()
+        .OrderBy(options.OrderByProp, options.OrderByDesc)
+        .FilterBy(options.FilterByProp, options.FilterValue);
 
-      BookListViewModel booksListViewModel = new BookListViewModel();
-      booksListViewModel.BooksViewModels.AddRange(titles.Select(CreateBookViewModelForIndex));
+      options.SetupRestOfDto(bookQuery);
+      vm.BooksViewModels = await bookQuery.Page(options.CurrentPage - 1, options.PageSize).ToListAsync();
 
-      ControllerUtil.SetPagingModel(booksListViewModel.Paging, page, count, PagingOptions.PageSize);
-
-      return View(booksListViewModel);
+      return View(vm);
     }
-
-
+        
     private BooksViewModel CreateBookViewModelForIndex(Title title)
     {
       var bookViewModel = _mapper.Map<Title, BooksViewModel>(title);

@@ -1,49 +1,70 @@
-﻿@model BookListViewModel
+﻿@model BoekenApplicatie.Web.ViewModels.BookListViewModel
 
 @{
-    ViewData["Title"] = "Boeken";
+  ViewData["Title"] = "Boeken";
+  Model.SortFilterPageData.FilterByProp = new string[6];
+  Model.SortFilterPageData.FilterValue = new string[6];
 }
 
 <h2>Boeken</h2>
-
 <p>
-    <a asp-action="Create">Create New</a>
+  <a asp-action="Create">Create New</a>
 </p>
-<table class="table">
+
+<br/>
+<form id="viewForm" asp-action="Index" method="get">
+  <input type="hidden" asp-for="SortFilterPageData.CurrentPage"/>
+  <input type="hidden" asp-for="SortFilterPageData.PrevStateCheck"/>
+  <input type="hidden" asp-for="SortFilterPageData.OrderByProp"/>
+  <input type="hidden" asp-for="SortFilterPageData.OrderByDesc"/>
+  <table class="table">
     <thead>
-      <tr>
-        <th>
-          @Html.DisplayNameFor(model => model.BooksViewModels[0].TitleName)
-        </th>
-        <th>
-          @Html.DisplayNameFor(model => model.BooksViewModels[0].SeriesName)
-        </th>
-        <th>
-          @Html.DisplayNameFor(model => model.BooksViewModels[0].Author.Name)
-        </th>
-        <th>
-          @Html.DisplayNameFor(model => model.BooksViewModels[0].Language)
-        </th>
-        <th>
-          @Html.DisplayNameFor(model => model.BooksViewModels[0].Publisher.Name)
-        </th>
-        <th>
-          @Html.DisplayNameFor(model => model.BooksViewModels[0].SerialNumber)
-        </th>
-        <th>
-          @Html.DisplayNameFor(model => model.BooksViewModels[0].Isbn)
-        </th>
-        <th>
-          @Html.DisplayNameFor(model => model.BooksViewModels[0].ReleasedYear)
-        </th>
-        <th>
-          @Html.DisplayNameFor(model => model.BooksViewModels[0].Price)
-        </th>
-        <th></th>
-      </tr>
+    <tr>
+      <th>
+        <a href="#" onclick="sortBy('TitleName')">@Html.DisplayNameFor(model => model.BooksViewModels[0].TitleName)</a> <br/>
+        <input type="hidden" asp-for="SortFilterPageData.FilterByProp[0]" value="TitleName"/>
+        <input asp-for="SortFilterPageData.FilterValue[0]"/>
+      </th>
+      <th>
+        <a href="#" onclick="sortBy('SeriesName')">@Html.DisplayNameFor(model => model.BooksViewModels[0].SeriesName)</a> <br />
+        <input type="hidden" asp-for="SortFilterPageData.FilterByProp[1]" value="SeriesName" />
+        <input asp-for="SortFilterPageData.FilterValue[1]" />
+      </th>
+      <th>
+        @Html.DisplayNameFor(model => model.BooksViewModels[0].Author.Name)
+        <input type="hidden" asp-for="SortFilterPageData.FilterByProp[5]" value="Author.LastName" />
+        <input asp-for="SortFilterPageData.FilterValue[5]" />
+      </th>
+      <th>
+        <a href="#" onclick="sortBy('Language')">@Html.DisplayNameFor(model => model.BooksViewModels[0].Language)</a> <br />
+        <input type="hidden" asp-for="SortFilterPageData.FilterByProp[2]" value="Language" />
+        <input asp-for="SortFilterPageData.FilterValue[2]" />
+      </th>
+      <th>
+        @Html.DisplayNameFor(model => model.BooksViewModels[0].Publisher.Name)
+      </th>
+      <th>
+        <a href="#" onclick="sortBy('SerialNumber')">@Html.DisplayNameFor(model => model.BooksViewModels[0].SerialNumber)</a> <br />
+        <input type="hidden" asp-for="SortFilterPageData.FilterByProp[3]" value="SerialNumber" />
+        <input asp-for="SortFilterPageData.FilterValue[3]" />
+      </th>
+      <th>
+        <a href="#" onclick="sortBy('Isbn')">@Html.DisplayNameFor(model => model.BooksViewModels[0].Isbn)</a> <br />
+        <input type="hidden" asp-for="SortFilterPageData.FilterByProp[4]" value="Isbn" />
+        <input asp-for="SortFilterPageData.FilterValue[4]" />
+      </th>
+      <th>
+        @Html.DisplayNameFor(model => model.BooksViewModels[0].ReleasedYear)
+      </th>
+      <th>
+        @Html.DisplayNameFor(model => model.BooksViewModels[0].Price)
+      </th>
+      <th></th>
+    </tr>
     </thead>
     <tbody>
-  @foreach (var item in Model.BooksViewModels) {
+    @foreach (var item in Model.BooksViewModels)
+    {
       <tr>
         <td>
           @Html.DisplayFor(modelItem => item.TitleName)
@@ -78,9 +99,15 @@
           <a asp-action="Delete" asp-route-id="@item.TitleId">Delete</a>
         </td>
       </tr>
-}
+    }
     </tbody>
-</table>
+  </table>
+  <input type="submit" style="display:none;"/>
+</form>
 <nav aria-label="navigation">
-  <partial name="_Pager", model="Model.Paging" />
+  <partial name="_Pager" , model="Model.SortFilterPageData"/>
 </nav>
+
+@section Scripts{
+  <script src="~/js/view.js" asp-append-version="true"></script>
+}

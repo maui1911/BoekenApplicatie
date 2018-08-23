@@ -1,26 +1,14 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
+﻿using BoekenApplicatie.Web.Options;
 
 namespace BoekenApplicatie.Web.ViewModels
 {
-    public abstract class BaseListViewModel
+  public abstract class BaseListViewModel
+  {
+    protected BaseListViewModel()
     {
-      protected BaseListViewModel()
-      {
-        Paging = new PagingModel();
-      }
-      public PagingModel Paging { get; set; }
+      SortFilterPageData = new SortFilterPageOptions();
+    }
 
-      public class PagingModel
-      {
-        public int FirstPage { get; set; } = 1;
-        public int LastPage { get; set; }
-        public int TotalPages { get; set; }
-        public int PrevPage { get; set; }
-        public int NextPage { get; set; }
-        public int CurrentPage { get; set; }
-      }
+    public SortFilterPageOptions SortFilterPageData { get; set; }
   }
 }

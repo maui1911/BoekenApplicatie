@@ -1,6 +1,4 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Linq;
 using System.Threading.Tasks;
 using BoekenApplicatie.Domain.Models;
 using Microsoft.AspNetCore.Identity;

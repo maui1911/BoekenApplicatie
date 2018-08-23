@@ -1,25 +1,18 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Linq;
 using System.Text.Encodings.Web;
 using System.Threading.Tasks;
 using AutoMapper;
-using BoekenApplicatie.Data.Context;
 using BoekenApplicatie.Domain.Models;
-using BoekenApplicatie.Web.Areas.Identity.Pages.Account;
 using BoekenApplicatie.Web.Extensions;
-using BoekenApplicatie.Web.Options;
 using BoekenApplicatie.Web.Services;
 using BoekenApplicatie.Web.ViewModels;
 using Microsoft.AspNetCore.Authentication;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Identity;
-using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
-using Microsoft.AspNetCore.Identity.UI.Services;
+using BoekenApplicatie.Data.Extensions;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
-using Microsoft.Extensions.Logging;
 
 namespace BoekenApplicatie.Web.Controllers
 {
@@ -42,22 +35,23 @@ namespace BoekenApplicatie.Web.Controllers
     }
 
     [Authorize]
-    public async Task<IActionResult> Index(int page = 1)
+    public async Task<IActionResult> Index(UserListViewModel vm)
     {
-      var skip = (page - 1) * PagingOptions.PageSize;
-      var take = PagingOptions.PageSize;
+      ModelState.Remove("SortFilterPageData.PrevStateCheck");
+      var options = vm.SortFilterPageData;
 
-      var resultTask = _userManager.Users.Skip(skip).Take(take).ToListAsync();
-      var countTask = _userManager.Users.CountAsync();
+      if(string.IsNullOrWhiteSpace(vm.SortFilterPageData.OrderByProp))
+        options.OrderByProp = "Id";
 
-      var users = await resultTask;
-      var count = await countTask;
+      var userQuery = _userManager.Users
+        .AsNoTracking()
+        .OrderBy(options.OrderByProp, options.OrderByDesc)
+        .FilterBy(options.FilterByProp, options.FilterValue);
 
-      var viewModel = new UserListViewModel() { ApplicationUsers = users };
+      options.SetupRestOfDto(userQuery);
+      vm.ApplicationUsers = await userQuery.Page(options.CurrentPage - 1, options.PageSize).ToListAsync();
 
-      ControllerUtil.SetPagingModel(viewModel.Paging, page, count, PagingOptions.PageSize);
-
-      return View(viewModel);
+      return View(vm);
     }
 
     [Authorize]

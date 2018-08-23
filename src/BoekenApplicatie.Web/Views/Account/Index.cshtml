@@ -3,6 +3,8 @@
 @{
   ViewData["Title"] = "Index";
   Layout = "~/Views/Shared/_Layout.cshtml";
+  Model.SortFilterPageData.FilterByProp = new string[2];
+  Model.SortFilterPageData.FilterValue = new string[2];
 }
 
 <h2>Account management</h2>
@@ -11,15 +13,23 @@
 
 @if (User.IsInRole("Admin"))
 {
-
+  <form id="viewForm" asp-action="Index" method="get">
+    <input type="hidden" asp-for="SortFilterPageData.CurrentPage"/>
+    <input type="hidden" asp-for="SortFilterPageData.PrevStateCheck"/>
+    <input type="hidden" asp-for="SortFilterPageData.OrderByProp"/>
+    <input type="hidden" asp-for="SortFilterPageData.OrderByDesc"/>
   <table class="table">
     <thead>
     <tr>
       <th>
-        @Html.DisplayNameFor(model => model.ApplicationUsers[0].UserName)
+        <a href="#" onclick="sortBy('UserName')"> @Html.DisplayNameFor(model => model.ApplicationUsers[0].UserName)</a> <br />
+        <input type="hidden" asp-for="SortFilterPageData.FilterByProp[0]" value="UserName" />
+        <input asp-for="SortFilterPageData.FilterValue[0]" />
       </th>
       <th>
-        @Html.DisplayNameFor(model => model.ApplicationUsers[0].Name)
+        <a href="#" onclick="sortBy('LastName')"> @Html.DisplayNameFor(model => model.ApplicationUsers[0].Name)</a> <br />
+        <input type="hidden" asp-for="SortFilterPageData.FilterByProp[1]" value="LastName" />
+        <input asp-for="SortFilterPageData.FilterValue[1]" />
       </th>
       <th></th>
     </tr>
@@ -44,7 +54,13 @@
     }
     </tbody>
   </table>
+  <input type="submit" style="display:none;"/>
+</form>
   <nav aria-label="navigation">
-    <partial name="_Pager" , model="Model.Paging" />
+    <partial name="_Pager" , model="Model.SortFilterPageData"/>
   </nav>
+
+@section Scripts{
+  <script src="~/js/view.js" asp-append-version="true"></script>
+}
 }

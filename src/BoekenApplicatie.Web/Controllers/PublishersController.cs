@@ -1,13 +1,11 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
 using BoekenApplicatie.Data.Context;
+using BoekenApplicatie.Data.Extensions;
 using BoekenApplicatie.Domain.Models;
-using BoekenApplicatie.Web.Options;
 using BoekenApplicatie.Web.ViewModels;
 using Microsoft.AspNetCore.Authorization;
 
@@ -23,22 +21,23 @@ namespace BoekenApplicatie.Web.Controllers
     }
 
     // GET: Publishers
-    public async Task<IActionResult> Index(int page = 1)
+    public async Task<IActionResult> Index(PublisherListViewModel vm)
     {
-      var skip = (page - 1) * PagingOptions.PageSize;
-      var take = PagingOptions.PageSize;
+      ModelState.Remove("SortFilterPageData.PrevStateCheck");
+      var options = vm.SortFilterPageData;
 
-      var resultTask = _context.Publishers.Skip(skip).Take(take).ToListAsync();
-      var countTask = _context.Publishers.CountAsync();
+      if(string.IsNullOrWhiteSpace(vm.SortFilterPageData.OrderByProp))
+        options.OrderByProp = "Id";
 
-      var publishers = await resultTask;
-      var count = await countTask;
+      var authorQuery = _context.Publishers
+        .AsNoTracking()
+        .OrderBy(options.OrderByProp, options.OrderByDesc)
+        .FilterBy(options.FilterByProp, options.FilterValue);
 
-      var viewModel = new PublisherListViewModel() {Publishers = publishers};
+      options.SetupRestOfDto(authorQuery);
+      vm.Publishers = await authorQuery.Page(options.CurrentPage - 1, options.PageSize).ToListAsync();
 
-      ControllerUtil.SetPagingModel(viewModel.Paging, page, count, PagingOptions.PageSize);
-
-      return View(viewModel);
+      return View(vm);
     }
 
     // GET: Publishers/Details/5

@@ -1,31 +1,43 @@
 ﻿@model AuthorListViewModel
 
 @{
-    ViewData["Title"] = "Auteur";
+  ViewData["Title"] = "Auteur";
+  Model.SortFilterPageData.FilterByProp = new string[2];
+  Model.SortFilterPageData.FilterValue = new string[2];
 }
 
 <h2>Auteur</h2>
 
 <p>
-    <a asp-action="Create">Create New</a>
+  <a asp-action="Create">Create New</a>
 </p>
-<table class="table">
+<form id="viewForm" asp-action="Index" method="get">
+  <input type="hidden" asp-for="SortFilterPageData.CurrentPage"/>
+  <input type="hidden" asp-for="SortFilterPageData.PrevStateCheck"/>
+  <input type="hidden" asp-for="SortFilterPageData.OrderByProp"/>
+  <input type="hidden" asp-for="SortFilterPageData.OrderByDesc"/>
+  <table class="table">
     <thead>
-      <tr>
-        <th>
-          @Html.DisplayNameFor(model => model.Authors[0].FirstName)
-        </th>
-        <th>
-          @Html.DisplayNameFor(model => model.Authors[0].Prefix)
-        </th>
-        <th>
-          @Html.DisplayNameFor(model => model.Authors[0].LastName)
-        </th>
-        <th></th>
-      </tr>
+    <tr>
+      <th>
+        <a href="#" onclick="sortBy('FirstName')"> @Html.DisplayNameFor(model => model.Authors[0].FirstName)</a> <br />
+        <input type="hidden" asp-for="SortFilterPageData.FilterByProp[0]" value="FirstName" />
+        <input asp-for="SortFilterPageData.FilterValue[0]" />
+      </th>
+      <th>
+        @Html.DisplayNameFor(model => model.Authors[0].Prefix)
+      </th>
+      <th>
+        <a href="#" onclick="sortBy('LastName')"> @Html.DisplayNameFor(model => model.Authors[0].LastName)</a> <br />
+        <input type="hidden" asp-for="SortFilterPageData.FilterByProp[1]" value="LastName" />
+        <input asp-for="SortFilterPageData.FilterValue[1]" />
+      </th>
+      <th></th>
+    </tr>
     </thead>
     <tbody>
-  @foreach (var item in Model.Authors) {
+    @foreach(var item in Model.Authors)
+    {
       <tr>
         <td>
           @Html.DisplayFor(modelItem => item.FirstName)
@@ -42,9 +54,15 @@
           <a asp-action="Delete" asp-route-id="@item.Id">Delete</a>
         </td>
       </tr>
-}
+    }
     </tbody>
-</table>
+  </table>
+  <input type="submit" style="display:none;"/>
+</form>
 <nav aria-label="navigation">
-  <partial name="_Pager" , model="Model.Paging" />
+  <partial name="_Pager" , model="Model.SortFilterPageData"/>
 </nav>
+
+@section Scripts{
+  <script src="~/js/view.js" asp-append-version="true"></script>
+}

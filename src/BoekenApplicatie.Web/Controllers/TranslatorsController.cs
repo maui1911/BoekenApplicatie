@@ -1,177 +1,179 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
 using BoekenApplicatie.Data.Context;
+using BoekenApplicatie.Data.Extensions;
 using BoekenApplicatie.Domain.Models;
-using BoekenApplicatie.Web.Options;
 using BoekenApplicatie.Web.ViewModels;
 using Microsoft.AspNetCore.Authorization;
-using Microsoft.AspNetCore.Builder;
 
 namespace BoekenApplicatie.Web.Controllers
 {
-    public class TranslatorsController : Controller
+  public class TranslatorsController : Controller
+  {
+    private readonly LibraryContext _context;
+
+    public TranslatorsController(LibraryContext context)
     {
-        private readonly LibraryContext _context;
+      _context = context;
+    }
 
-        public TranslatorsController(LibraryContext context)
-        {
-            _context = context;
-        }
+    // GET: Translators
+    public async Task<IActionResult> Index(TranslatorListViewModel vm)
+    {
+      ModelState.Remove("SortFilterPageData.PrevStateCheck");
+      var options = vm.SortFilterPageData;
 
-        // GET: Translators
-        public async Task<IActionResult> Index(int page = 1)
-        {
-          var skip = (page - 1) * PagingOptions.PageSize;
-          var take = PagingOptions.PageSize;
+      if(string.IsNullOrWhiteSpace(vm.SortFilterPageData.OrderByProp))
+        options.OrderByProp = "Id";
 
-          var translatorsTask = _context.Translators.Skip(skip).Take(take).ToListAsync();
-          var countTask = _context.Translators.CountAsync();
+      var authorQuery = _context.Translators
+        .AsNoTracking()
+        .OrderBy(options.OrderByProp, options.OrderByDesc)
+        .FilterBy(options.FilterByProp, options.FilterValue);
 
-          List<Translator> translators = await translatorsTask;
-          var count = await countTask;
+      options.SetupRestOfDto(authorQuery);
+      vm.Translators = await authorQuery.Page(options.CurrentPage - 1, options.PageSize).ToListAsync();
 
-          TranslatorListViewModel transListViewModel = new TranslatorListViewModel {Translators = translators};
+      return View(vm);
+    }
 
-          ControllerUtil.SetPagingModel(transListViewModel.Paging, page, count, PagingOptions.PageSize);
+    // GET: Translators/Details/5
+    public async Task<IActionResult> Details(Guid? id)
+    {
+      if(id == null)
+      {
+        return NotFound();
+      }
 
-          return View(transListViewModel);
-        }
+      var translator = await _context.Translators
+        .FirstOrDefaultAsync(m => m.Id == id);
+      if(translator == null)
+      {
+        return NotFound();
+      }
 
-        // GET: Translators/Details/5
-        public async Task<IActionResult> Details(Guid? id)
-        {
-            if (id == null)
-            {
-                return NotFound();
-            }
-
-            var translator = await _context.Translators
-                .FirstOrDefaultAsync(m => m.Id == id);
-            if (translator == null)
-            {
-                return NotFound();
-            }
-
-            return View(translator);
-        }
+      return View(translator);
+    }
 
     // GET: Translators/Create
-      [Authorize(Roles = "Admin")]
+    [Authorize(Roles = "Admin")]
     public IActionResult Create()
-        {
-            return View();
-        }
+    {
+      return View();
+    }
 
     // POST: Translators/Create
     // To protect from overposting attacks, please enable the specific properties you want to bind to, for 
     // more details see http://go.microsoft.com/fwlink/?LinkId=317598.
     [Authorize(Roles = "Admin")]
     [HttpPost]
-        [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Create([Bind("Id,LastName,FirstName,Prefix")] Translator translator)
-        {
-            if (ModelState.IsValid)
-            {
-                translator.Id = Guid.NewGuid();
-                _context.Add(translator);
-                await _context.SaveChangesAsync();
-                return RedirectToAction(nameof(Index));
-            }
-            return View(translator);
-        }
+    [ValidateAntiForgeryToken]
+    public async Task<IActionResult> Create([Bind("Id,LastName,FirstName,Prefix")] Translator translator)
+    {
+      if(ModelState.IsValid)
+      {
+        translator.Id = Guid.NewGuid();
+        _context.Add(translator);
+        await _context.SaveChangesAsync();
+        return RedirectToAction(nameof(Index));
+      }
+
+      return View(translator);
+    }
 
     // GET: Translators/Edit/5
-      [Authorize(Roles = "Admin")]
+    [Authorize(Roles = "Admin")]
     public async Task<IActionResult> Edit(Guid? id)
-        {
-            if (id == null)
-            {
-                return NotFound();
-            }
+    {
+      if(id == null)
+      {
+        return NotFound();
+      }
 
-            var translator = await _context.Translators.FindAsync(id);
-            if (translator == null)
-            {
-                return NotFound();
-            }
-            return View(translator);
-        }
+      var translator = await _context.Translators.FindAsync(id);
+      if(translator == null)
+      {
+        return NotFound();
+      }
+
+      return View(translator);
+    }
 
     // POST: Translators/Edit/5
     // To protect from overposting attacks, please enable the specific properties you want to bind to, for 
     // more details see http://go.microsoft.com/fwlink/?LinkId=317598.
     [Authorize(Roles = "Admin")]
     [HttpPost]
-        [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Edit(Guid id, [Bind("Id,LastName,FirstName,Prefix")] Translator translator)
-        {
-            if (id != translator.Id)
-            {
-                return NotFound();
-            }
+    [ValidateAntiForgeryToken]
+    public async Task<IActionResult> Edit(Guid id, [Bind("Id,LastName,FirstName,Prefix")] Translator translator)
+    {
+      if(id != translator.Id)
+      {
+        return NotFound();
+      }
 
-            if (ModelState.IsValid)
-            {
-                try
-                {
-                    _context.Update(translator);
-                    await _context.SaveChangesAsync();
-                }
-                catch (DbUpdateConcurrencyException)
-                {
-                    if (!TranslatorExists(translator.Id))
-                    {
-                        return NotFound();
-                    }
-                    else
-                    {
-                        throw;
-                    }
-                }
-                return RedirectToAction(nameof(Index));
-            }
-            return View(translator);
+      if(ModelState.IsValid)
+      {
+        try
+        {
+          _context.Update(translator);
+          await _context.SaveChangesAsync();
         }
+        catch(DbUpdateConcurrencyException)
+        {
+          if(!TranslatorExists(translator.Id))
+          {
+            return NotFound();
+          }
+          else
+          {
+            throw;
+          }
+        }
+
+        return RedirectToAction(nameof(Index));
+      }
+
+      return View(translator);
+    }
 
     // GET: Translators/Delete/5
-      [Authorize(Roles = "Admin")]
+    [Authorize(Roles = "Admin")]
     public async Task<IActionResult> Delete(Guid? id)
-        {
-            if (id == null)
-            {
-                return NotFound();
-            }
+    {
+      if(id == null)
+      {
+        return NotFound();
+      }
 
-            var translator = await _context.Translators
-                .FirstOrDefaultAsync(m => m.Id == id);
-            if (translator == null)
-            {
-                return NotFound();
-            }
+      var translator = await _context.Translators
+        .FirstOrDefaultAsync(m => m.Id == id);
+      if(translator == null)
+      {
+        return NotFound();
+      }
 
-            return View(translator);
-        }
+      return View(translator);
+    }
 
     // POST: Translators/Delete/5
-      [Authorize(Roles = "Admin")]
+    [Authorize(Roles = "Admin")]
     [HttpPost, ActionName("Delete")]
-        [ValidateAntiForgeryToken]
-        public async Task<IActionResult> DeleteConfirmed(Guid id)
-        {
-            var translator = await _context.Translators.FindAsync(id);
-            _context.Translators.Remove(translator);
-            await _context.SaveChangesAsync();
-            return RedirectToAction(nameof(Index));
-        }
-
-        private bool TranslatorExists(Guid id)
-        {
-            return _context.Translators.Any(e => e.Id == id);
-        }
+    [ValidateAntiForgeryToken]
+    public async Task<IActionResult> DeleteConfirmed(Guid id)
+    {
+      var translator = await _context.Translators.FindAsync(id);
+      _context.Translators.Remove(translator);
+      await _context.SaveChangesAsync();
+      return RedirectToAction(nameof(Index));
     }
+
+    private bool TranslatorExists(Guid id)
+    {
+      return _context.Translators.Any(e => e.Id == id);
+    }
+  }
 }

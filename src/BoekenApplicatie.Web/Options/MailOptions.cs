@@ -1,9 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
-
-namespace BoekenApplicatie.Web.Options
+﻿namespace BoekenApplicatie.Web.Options
 {
     public class MailOptions
     {

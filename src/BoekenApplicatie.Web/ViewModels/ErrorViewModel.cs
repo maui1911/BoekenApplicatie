@@ -1,5 +1,3 @@
-using System;
-
 namespace BoekenApplicatie.Web.ViewModels
 {
     public class ErrorViewModel

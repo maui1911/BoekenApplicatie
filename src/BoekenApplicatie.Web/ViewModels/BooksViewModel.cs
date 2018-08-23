@@ -1,10 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.ComponentModel;
-using System.Linq;
-using System.Threading.Tasks;
 using BoekenApplicatie.Domain.Models;
-
 using Microsoft.AspNetCore.Mvc.Rendering;
 
 namespace BoekenApplicatie.Web.ViewModels
